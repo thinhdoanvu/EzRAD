@@ -66,3 +66,4 @@ Step 6. Clik Project ---> Start a job
 -----6.4. Number of Interation: 
           At least 3 to 10, it depends on how many times do you want to verify your results. I think 3 is enough for small data.
           If you want to choose optimal K seriouly, you need to set K by 10
+-----6.5. RUN and waiting for...
