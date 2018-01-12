@@ -4,7 +4,7 @@ How to install Structure on Windows
 --Convert SNPs data to Structure Data by PGDSpider:
 ----Need to do:
 ------1. Validate SNPs file:
-------2. popfile.txt:
+------2. popfile.txt: https://github.com/thinhdoanvu/EzRAD/blob/master/Structure/popfile.txt
 ------3. Guide to step by step: https://github.com/thinhdoanvu/EzRAD/blob/master/PGDSPider/From_VCF_2_Structure
 
 
