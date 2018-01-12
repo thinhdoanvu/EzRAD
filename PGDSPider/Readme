@@ -22,17 +22,17 @@
 --------what is population looks like????? 
 ----------1st column: name of sample as same name as vcf file. For example
 ------------#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	HP_HP32	HP_HP45	HP_HP46	HP_HP47	HP_HP48	HP_HP50	HP_HP51.......
-----------2nd column: name of goups do you want to mark. For example, HP_HP32 is HP, KG_KG12 is KG ....
+----------2nd column: increasing number of goups do you want to mark. For example, HP_HP32 is 1, KG_KG12 is 2 ....
 ########################population file####################
-HP_HP32	HP
-HP_HP45	HP
+HP_HP32	1
+HP_HP45	1
 ...
-KG_KG11	KG
-KG_KG12	KG
-KG_KG17	KG
+KG_KG11	2
+KG_KG12	2
+KG_KG17	2
 ...
-KH_LS32	KH
-KH_LS34	KH
+KH_LS32	3
+KH_LS34	3
 ...
 ######################################End###############
 ------STRUCTURE Writer Questions (tab):
