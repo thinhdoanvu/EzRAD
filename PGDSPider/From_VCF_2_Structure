@@ -14,19 +14,25 @@
 --------select population definition file: the path you save population file
 --------what is population looks like????? 
 ----------1st column: name of sample as same name as vcf file. For example
-------------#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	HP_HP32	HP_HP45	HP_HP46	HP_HP47	HP_HP48	HP_HP50	HP_HP51.......
+------------#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	G1_LA32	G1_LA45	G1_LA46	G1_LA47	G1_LA48	G1_LA50	G1_LA51	G1_LA53	G1_LA56	G1_LA57	G1_LA58	G1_LA59	G1_LA60	G1_LA61	G1_LA63	G1_LA65	G1_LA67	G2_LA11	G2_LA12	G2_LA17	G2_LA18	G2_LA20	G2_LA21	G2_LA22	G2_LA23	G2_LA25	G2_LA32	G2_LA33	G2_LA36	G2_LA37	G2_LA39	G2_LA42	G2_LA43	G2_LA44	G2_LA55	G2_LA65	G2_LA70	G2_LA78	G3_LA32	G3_LA34	G3_LA35	G3_LA37	G3_LA41	G3_LA42	G3_LB46	G3_LB68	G3_LB92	G3_LB93	G3_LB94	G3_LB95	G3_LB96
 ----------2nd column: increasing number of goups do you want to mark. For example, HP_HP32 is 1, KG_KG12 is 2 ....
 ########################population file####################
-LocA_LocA32	1
-LocA_LocA45	1
+G1_LA32	1
+G1_LA45	1
 ...
-LocB_LocB11	2
-LocB_LocB12	2
+G2_LA11	2
+G2_LA12	2
 ...
-LocC_LocC32	3
-LocC_LocC34	3
+G3_LA32	3
+G3_LA34	3
+G3_LB11 3
+G3_LC33 3
 ...
 ######################################End###############
+@@@@@@@Difinition name: GroupNumber_LocationNameNumberedSample
+@@@@@@@Example name   :G    3     _LA          33
+@@@@@@@Exactly name   : G3_LA33
+
 ------STRUCTURE Writer Questions (tab):
 --------STRUCTURE (Optional): specify with data type should be included in the STUCTURE file (STUCTURE can only analyze type per file):SNP
 ------Save and Apply (click)
