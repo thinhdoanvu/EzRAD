@@ -42,3 +42,18 @@ Step 4 of 4. Format input data set (continue)
 
 FINISH TO SETUP DATA INPUT FILE. IF YOU HAVE ANY ERRORS WHEN YOU SETUP, CLICK BACK TO DO AGAIN.....
 
+Step 5. Click Parameters set ---> Click NEW
+-----5.1. Length of Burnin Period: 5000
+          At least 5000 to 10000, it depends on your hardware. Longer of length means longer time for burnin.
+          If you have a HPC, need to set 10000 to 50000
+-----5.2. Number of MCMC Reps after Burnin: 10000
+          At least x2 of Burnin, that means if you set 10000 for burnin, you will set 50000 or 100000 for MCMC.
+          It depends on your hardware.
+-----5.3. Click Ancestry Model. Check Use Adnix Model
+-----5.4. Click Allele frequency model: Check Allele frequencies correlated.
+-----5.5. Click Advanced: Check Compute Probability of the data (for estimating K)
+-----5.6. Click OK. Set Parameter name: TutorialParameter
+-----5.7. Explore Parameter file
+
+
+
