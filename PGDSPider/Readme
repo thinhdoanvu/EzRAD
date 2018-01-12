@@ -16,6 +16,27 @@
 
 ----SPID conversion script:
 ------create/Edit SPID file: choose the path you want to save SPID file
+--------what is ploidy of data: diploid
+--------do you want to include a file with population definition: yes
+--------select population definition file: the path you save population file
+--------what is population looks like????? 
+----------1st column: name of sample as same name as vcf file. For example
+------------#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	HP_HP32	HP_HP45	HP_HP46	HP_HP47	HP_HP48	HP_HP50	HP_HP51.......
+----------2nd column: name of goups do you want to mark. For example, HP_HP32 is HP, KG_KG12 is KG ....
+########################population file####################
+HP_HP32	HP
+HP_HP45	HP
+...
+KG_KG11	KG
+KG_KG12	KG
+KG_KG17	KG
+...
+KH_LS32	KH
+KH_LS34	KH
+...
+######################################End###############
+------STRUCTURE Writer Questions (tab):
+--------STRUCTURE (Optional): specify with data type should be included in the STUCTURE file (STUCTURE can only analyze type per file):SNP
 
 ----CLICK: CONVERT and wait for running
 
