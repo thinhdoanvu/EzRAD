@@ -1,0 +1,23 @@
+Step 1. Go to Results folder: path you save Project and looking for Results folder name, like so:
+        O:\Tutorial EzRAD\Structure\TutorialStructure\TutorialParameter\
+        
+Step 2. Zip folder Results into Results.zip
+
+Step 3. Go to the web page: http://taylor0.biology.ucla.edu/structureHarvester/
+     3.1. Click on the "Choose File" button and select your archive (Results.zip).
+     3.2. Click "Harvest!"
+    
+Step 4. Explore
+     4.1. L(K) = mean +- SD graph. You can see that, the highest value is 2 and SD by 0
+     4.2. Delta(K) = mean(|L"(K)|)/sd(L(K)). You can see that the highe value is 2
+     4.3. The Evanno table output is also available as a tab-delimited text file (for use with Excel).
+          K	Reps	MeanLnP(K)	  StdevLnP(K)	  Ln'(K)	      |Ln''(K)|	    Delta K
+          1	3	    -15620.400000	3.459769	    —	            —	            —
+          2	3	    -14931.566667	5.394751	    688.833333	  745.533333	  138.196072
+          3	3	    -14988.266667	176.383711	  -56.700000	  1370.700000	  7.771126
+          4	3	    -16415.666667	2146.022960	  -1427.400000	—	            —
+
+   @@@@@@@@@@@@ IMPORTANT NOTE @@@@@@@@@@
+   This document is not permanent. It will automatically be removed from the server in seven (7) days. 
+   Please save or print it for your records. If images are missing, try reloading; this sometimes happens under heavy server load.
+
