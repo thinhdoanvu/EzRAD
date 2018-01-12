@@ -1,4 +1,4 @@
-2.1. SNPs (vcf format) to Structure
+Convert SNPs (vcf format) to Structure. Open PGDSpider, it will appear dialog and do steps like so:
 ----Data input file: 
 ------File format: choose VCF
 ------Select inputfile: the path to your folder which contain vcf file
@@ -23,10 +23,10 @@ G1_LocA45	1
 G2_LocA11	2
 G2_LocA12	2
 ...
-G3_LocA32	3
-G3_LocA34	3
-G3_LocB11 3
-G3_LocC33 3
+G3_LocA32 	3
+G3_LocA34 	3
+G3_LocB11 	3
+G3_LocC33 	3
 ...
 ######################################End###############
 @@@@@@@Difinition name: GroupNumber_LocationNameNumberedSample
