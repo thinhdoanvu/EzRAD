@@ -5,4 +5,6 @@
 ----For Linux: Execute the following command as a root user: sudo apt-get install openjdk-7-jre
 
 2. How to Convert data from:
-2.1. SNPs (vcf format) to Structure: From_VCF_2_Structure
+2.1. SNPs (vcf format) to Structure: 
+----text file: From_VCF_2_Structure 
+----figure steps: https://github.com/thinhdoanvu/EzRAD/tree/master/PGDSPider/Figures/VCF_2_Structure
