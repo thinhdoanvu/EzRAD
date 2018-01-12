@@ -55,5 +55,14 @@ Step 5. Click Parameters set ---> Click NEW
 -----5.6. Click OK. Set Parameter name: TutorialParameter
 -----5.7. Explore Parameter file
 
-
-
+Step 6. Clik Project ---> Start a job
+-----6.1. Click to seclect parameter set for running
+-----6.2. Set K from 1 to maximize number of Groups which you think you have + 1.
+          For example, in my case. I will set K from 1 to 4, I have 3 Locations for sampling.
+          Why you set K by 1, because 1 is itself and this is lowest K
+          Why you set K by 4(=3+1), because it is highest K
+          Both of them will be except when you choose optimal K
+-----6.3. NO TICK sequential interger radom seed starting at. Because, I want to run step by step K
+-----6.4. Number of Interation: 
+          At least 3 to 10, it depends on how many times do you want to verify your results. I think 3 is enough for small data.
+          If you want to choose optimal K seriouly, you need to set K by 10
