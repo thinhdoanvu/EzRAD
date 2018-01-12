@@ -1,0 +1,22 @@
+1. How to install PGDSpider
+--Goto http://www.cmpg.unibe.ch/software/PGDSpider/ and Download lastest version
+--Need to install Java first:
+----For Windows: download and install Java RE with following link: http://www.oracle.com/technetwork/java/javase/downloads/index.html
+----For Linux: Execute the following command as a root user: sudo apt-get install openjdk-7-jre
+
+2. How to Convert data from:
+2.1. SNPs (vcf format) to Structure
+----Data input file: 
+------File format: choose VCF
+------Select inputfile: the path to your folder which contain vcf file
+
+----Data output file:
+------File format: choose STRUCTURE
+------Select output file: the path you want to save output file
+
+----SPID conversion script:
+------create/Edit SPID file: choose the path you want to save SPID file
+
+----CLICK: CONVERT and wait for running
+
+
