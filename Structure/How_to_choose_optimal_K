@@ -17,7 +17,27 @@ Step 4. Explore
         3	3	-14988.266667	176.383711	-56.700000	1370.700000	7.771126
         4	3	-16415.666667	2146.022960	-1427.400000	—	        —
 
-   @@@@@@@@@@@@ IMPORTANT NOTE @@@@@@@@@@
+Step 5. Choose Run_x_K_y to Plot in EXCEL.
+        Choose the K optimal
+        Choose the highest variation in this K list
+        >==<TutorialParameter_run_5_f_2 is the best
+        >==<K=2
+        >==<run=5
+        ----------------------------------------------------------------------------------------------------------------
+        File name	                        Run #	K	Est. Ln prob. of data	Mean value of Ln likelihood	Variance of Ln likelihood
+        ResultsTutorialParameter_run_3_f	3	1	-15620.1	        -15471.1	                298.1
+        ResultsTutorialParameter_run_1_f	1	1	-15624.0	        -15471.6	                304.8
+        ResultsTutorialParameter_run_2_f	2	1	-15617.1	        -15471.2	                291.8
+        ResultsTutorialParameter_run_5_f	5	2	-14936.1	        -14594.7	                682.9
+        ResultsTutorialParameter_run_4_f	4	2	-14925.6	        -14595.0	                661.3
+        ResultsTutorialParameter_run_6_f	6	2	-14933.0	        -14595.1	                675.9
+        ResultsTutorialParameter_run_9_f	9	3	-15191.0	        -14446.9	                1488.4
+        ResultsTutorialParameter_run_8_f	8	3	-14903.8	        -14440.4	                926.7
+        ResultsTutorialParameter_run_7_f	7	3	-14870.0	        -14433.8	                872.3
+        ResultsTutorialParameter_run_10_f	10	4	-15477.0	        -14411.9	                2130.1
+        ResultsTutorialParameter_run_12_f	12	4	-18871.1	        -14390.8	                8960.7
+        ResultsTutorialParameter_run_11_f	11	4	-14898.9	        -14425.0	                947.9
+        
+@@@@@@@@@@@@ IMPORTANT NOTE @@@@@@@@@@
    This document is not permanent. It will automatically be removed from the server in seven (7) days. 
    Please save or print it for your records. If images are missing, try reloading; this sometimes happens under heavy server load.
-
