@@ -1,22 +1,35 @@
 Convert SNPs (vcf format) to Structure. Open PGDSpider, it will appear dialog and do steps like so:
-----Data input file: 
+Step 1. Data input file: 
 ------File format: choose VCF
 ------Select inputfile: the path to your folder which contain vcf file
 
-----Data output file:
+Step 2. Data output file:
 ------File format: choose STRUCTURE
 ------Select output file: the path you want to save output file
 
-----SPID conversion script:
-------create/Edit SPID file: choose the path you want to save SPID file
+Step 3. SPID conversion script:
+    Step 3.1. create/Edit SPID file: choose the path you want to save SPID file
 --------what is ploidy of data: diploid
 --------do you want to include a file with population definition: yes
 --------select population definition file: the path you save population file
+
+    Step 3.2.STRUCTURE Writer Questions (tab):
+--------STRUCTURE (Optional): specify with data type should be included in the STUCTURE file (STUCTURE can only analyze type per file):SNP
+
+    Step 3.3. Save and Apply (click)
+--------choose the path you want to save scripts file
+
+Step 4. CONVERT and wait for running
+
+############################################################################################################
+EXPLANATION FOR SOME THINGS.....
+
+@@@@@@@@@@@ Population Definition file @@@@@@@@@@@
 --------what is population looks like????? 
 ----------1st column: name of sample as same name as vcf file. For example
 ------------#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	G1_LocA32	G1_LocA45	G1_LocA46	G1_LocA47	G1_LocA48	G1_LocA50	G1_LocA51	G1_LocA53	G1_LocA56	G1_LocA57	G1_LocA58	G1_LocA59	G1_LocA60	G1_LocA61	G1_LocA63	G1_LocA65	G1_LocA67	G2_LocA11	G2_LocA12	G2_LocA17	G2_LocA18	G2_LocA20	G2_LocA21	G2_LocA22	G2_LocA23	G2_LocA25	G2_LocA32	G2_LocA33	G2_LocA36	G2_LocA37	G2_LocA39	G2_LocA42	G2_LocA43	G2_LocA44	G2_LocA55	G2_LocA65	G2_LocA70	G2_LocA78	G3_LocA32	G3_LocA34	G3_LocA35	G3_LocA37	G3_LocA41	G3_LocA42	G3_LocB46	G3_LocB68	G3_LocB92	G3_LocB93	G3_LocB94	G3_LocB95	G3_LocB96
-----------2nd column: increasing number of goups do you want to mark. For example, G1_LocA45	is Group 1, G2_LocA46 is Group 2 ....
-########################population file####################
+----------2nd column: increasing number of goups do you want to mark. For example, G1_LocA45     s G of file    roup 1, G2_LocA46 is Group 2 ....
+######################## population definition file ####################
 G1_LocA32	1
 G1_LocA45	1
 ...
@@ -28,21 +41,16 @@ G3_LocA34 	3
 G3_LocB11 	3
 G3_LocC33 	3
 ...
-######################################End###############
+#############    End of population definition file    ###############
 @@@@@@@Difinition name: GroupNumber_LocationNameNumberedSample
 @@@@@@@Example name   :G    3     _LocA          33
 @@@@@@@Exactly name   : G3_LocA33
 @@@@@@@So, some times there are many location in 1 group. It depends on how many individuals do you have or do you want to make a group
 
-------STRUCTURE Writer Questions (tab):
---------STRUCTURE (Optional): specify with data type should be included in the STUCTURE file (STUCTURE can only analyze type per file):SNP
-------Save and Apply (click)
---------choose the path you want to save scripts file
 
-----CLICK: CONVERT and wait for running
 
---Output file lile this:
-#########################Output format#########################
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Output structure format file lile this: @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
 		SNP_1 SNP_2 SNP_3 SNP_4 SNP_5 SNP_6 SNP_7 SNP_8 SNP_9 SNP_10 SNP_11 .....
 G1_LocA32	1	1 -9 1 -9 -9 4 3 -9 -9 -9 -9 4 4 -9 -9 3 -9 -9 -9 -9 -9 -9 -9 -9 -9 ....
 G1_LocA32	1	1 -9 1 -9 -9 4 3 -9 -9 -9 -9 4 4 -9 -9 3 -9 -9 -9 -9 -9 -9 -9 -9 -9 ....
@@ -52,7 +60,7 @@ G2_LocA11	2	1 3 1 2 4 2 3 4 4 1 4 4 4 1 3 3 4 3 3 4 4 2 1 3 3 3 3 4 4 3 2 2 2 1 
 ...
 G3_LocC96	3	-9 2 -9 2 4 -9 3 4 4 1 4 4 4 1 3 3 1 3 3 -9 4 -9 1 3 3 3 3 4 4 3 2 2....
 G3_LocC96	3	-9 2 -9 2 4 -9 3 4 4 1 2 2 4 1 3 3 1 3 3 -9 4 -9 1 3 3 1 3 4 4 3 2 4....
-##########################END###################################
+##########################    END of structre file    ###################################
 1st ROW: name of SNPs (How many SNPs)
 
 1st column: Sample name
