@@ -1,11 +1,11 @@
-How to install Structure on Windows
+1. How to install Structure on Windows
 --Go to link: https://web.stanford.edu/group/pritchardlab/structure.html and download Structure 2.3.4.
 
---Convert SNPs data to Structure Data by PGDSpider:
-----Need to do:
-------1. Validate SNPs file: https://github.com/thinhdoanvu/EzRAD/blob/master/ValidateSNPs.vcf
-------2. popfile.txt: https://github.com/thinhdoanvu/EzRAD/blob/master/Structure/popfile.txt
-------3. Guide to step by step: https://github.com/thinhdoanvu/EzRAD/blob/master/PGDSPider/From_VCF_2_Structure
+2. Convert SNPs data to Structure Data by PGDSpider:
+--Need to do:
+----1. Validate SNPs file: https://github.com/thinhdoanvu/EzRAD/blob/master/ValidateSNPs.vcf
+----2. popfile.txt: https://github.com/thinhdoanvu/EzRAD/blob/master/Structure/popfile.txt
+----3. Guide to step by step: https://github.com/thinhdoanvu/EzRAD/blob/master/PGDSPider/From_VCF_2_Structure
 
 
 
