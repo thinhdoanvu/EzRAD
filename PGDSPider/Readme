@@ -37,6 +37,8 @@ KH_LS34	KH
 ######################################End###############
 ------STRUCTURE Writer Questions (tab):
 --------STRUCTURE (Optional): specify with data type should be included in the STUCTURE file (STUCTURE can only analyze type per file):SNP
+------Save and Apply (click)
+--------choose the path you want to save scripts file
 
 ----CLICK: CONVERT and wait for running
 
