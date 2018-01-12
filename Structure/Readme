@@ -1,4 +1,4 @@
-1. How to install Structure on Windows
+1. How to install Structure on Windows/Linux
 --Go to link: https://web.stanford.edu/group/pritchardlab/structure.html and download Structure 2.3.4.
 
 2. Convert SNPs data to Structure Data by PGDSpider:
@@ -12,3 +12,5 @@
 ----3. Guide to step by step: https://github.com/thinhdoanvu/EzRAD/blob/master/PGDSPider/From_VCF_2_Structure
 
 OUTPUT file here: https://github.com/thinhdoanvu/EzRAD/upload/master/Structure/structure.strc
+
+3. How to run Structure
