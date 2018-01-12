@@ -1,0 +1,35 @@
+Step 1. Clik the name of the Parameter for analysing.
+-----1.1. For example, TutorialParameter_run_x(K=y). with x = 5, y = 2
+-----1.2. Click BarPlot to show bar graph.
+-------1.2.1. Choose Original Order. We can see that, there are 3 locations but there are 2 clusters with 2 different colors (GREE and RED)
+-------1.2.2. Choose Group by POP ID. We can see that, the number 1, 2, 3 at the botom are POP ID as we defined before. 
+              There are 2 clusters with 2 different colors (GREE and RED). Grop 1 RED color is dominate, Grop 2 GREEN color is dominate.
+              Group 3 alsmost is RED color, a litle for GREEN.
+-------1.2.3. Choose Sort by Q for crystal view how many groups for.
+-------1.2.4. Choose Plot in multiple lines to know what are individuals for groups 1 or 2.
+-------1.2.5. Click Save to download plot in to your path. But it is not good enough quality for report. 
+              My advice is screen shot and save to your drive
+              
+Step 2. Clik the name of the Parameter for analysing.
+-----2.1. For example, TutorialParameter_run_x(K=y). with x = 5, y = 2
+-----2.2. Read Information
+          --------------------------------------------
+          Proportion of membership of each pre-defined
+           population in each of the 2 clusters
+
+          Given    Inferred Clusters       Number of
+           Pop       1      2             Individuals
+
+            1:     0.981  0.019              17
+            2:     0.022  0.978              21
+            3:     0.805  0.195              13
+          --------------------------------------------
+1st column: Populations (clusters): 1 2 3 4
+2nd and 3rd column: Infer clusters, in this case I choose infer by 2, so I have 2 column 2 and 3. 
+                    If I choose infer cluster by 3, I will have 3 column 2, 3, and 4
+                    If I choose infer cluster by 4, I will have 4 column 2, 3, 4, and 5
+                    And so on ...
+       You can see, Pop 1: Cluster 1 proportioned with 98.1% and 1.90% for Cluster 2
+                    Pop 2: Cluster 2 proportioned with 97.8% and 2.20% for Cluster 1
+                    Pop 3: Cluster 1 proportioned with 80.5% and 19.5% for Cluster 2
+4th column: Number of Individuals: How many individuals per each sample location.
