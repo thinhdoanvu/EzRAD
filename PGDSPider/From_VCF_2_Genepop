@@ -1,0 +1,10 @@
+Step 1. Open PGDSpider
+-----1.1. Data input file: 
+-----1.1.1. File format: VCF
+-----1.1.2. Select input file: path you save Validate SNPs file (VCF format)
+-----1.2. Data output file:
+-----1.2.1. File format: GENEPOP
+-----1.2.2. Select output file: path you save GENEPOP output file
+-----1.3. Click Creat/Edit SPID file
+
+Step 2. 
