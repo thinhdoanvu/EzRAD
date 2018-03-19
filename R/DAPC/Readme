@@ -1,0 +1,75 @@
+#Step 1. Copy all lines with install word beginning
+install.packages("devtools")
+install_github("thibautjombart/adegenet")
+install.packages("DBI")
+install.packages("assertthat")
+install.packages("tibble")
+install.packages("scales")"
+install.packages("httpuv")
+install.packages("xtable")
+install.packages("deldir")
+install.packages("LearnBayes")
+install.packages("gmodels")
+install.packages("expm")
+install.packages("sp")
+install.packages("permute")
+install.packages("diveRsity")
+
+#Step 2. Check again if all necessary libraries are good running
+library(devtools)  
+library(adegenet)
+library(plyr)
+
+#Results like here, if your setup successful
+Loading required package: adegenet
+Loading required package: ade4
+
+   /// adegenet 2.0.1 is loaded ////////////
+
+   > overview: '?adegenet'
+   > tutorials/doc/questions: 'adegenetWeb()' 
+   > bug reports/feature requests: adegenetIssues()
+   
+#Step 3. Using adegenet Server for convinient
+adegenetServer()
+
+Please, check Fig 1
+
+#Step 4. How to convert VCF to Genepop format?
+Using PGD Spider and Choose parameters like so:
+4.1. VCF Parser question Tab
+-Select input/output
+-- Data input file (File Format): VCF file
+-- Data output file (File Format): Genepop
+-- Select input file: path_you_saved_VCF_file
+-- Select output file: path_you_will_save_Genepop_file
+-Create/Edit SPID file
+--Answer some questions below:
+---What is the ploid of the data: diploid
+---Do you want to include a file with population definition? 
+====YES
+---Select population definition file: path_your_popmap_file_which_you_saved
+
+4.2. GENEPOP Writer question
+-Answer only ONE question below:
+--Specify which data type should be included in the GENEPOP file (Genepop can be analyze on the data type per file)
+====SNP
+
+4.3. Click Save and Apply
+-Click SAVE button
+
+4.5. Click Convert Button
+
+#Step 5. Edit your Genepop file into confortable with PCA on R
+5.1. Open your genepop file by Notepad++
+5.2. Drag in to the first POP line, please check it carefully
+Column 1: Individual IDs - It must be numbering ordered (1, 2, 3,.. forexample)
+We need to change your 1st column follow by:
+Group1_Site1numbered will be change 1_numbered. For example: 1_1 (G1_S11), 1_2 (G1_S12), 1_3(G1_S13)
+Group1_Site2numbered will be change 2_numbered. For example: 2_1 (G1_S21), 2_2 (G1_S12), 2_3(G1_S23)
+...
+Like this:
+
+
+
+
