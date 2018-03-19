@@ -32,15 +32,25 @@ Using PGD Spider and Choose parameters like so:
 --Choose the path_you_saved_genepop_file in new Window
 --Choose the path_you_want_to_save GeneAlEx file (beware need to add ".xlsx" in your file name that can be open in Excel)
 
-#Step 6. Convert to Genepop file again use for PCA in R
+#Step 6. Convert to Genepop format again use for PCA in R
 -Click Addins - GeneAlEx again
 -Export data menu - Choose genepop format
 - Choose some params for output file like so:
 --Data format: Codominant
 --Output: Check "To text file"
 --Click OK
+--Choose the path_folder_you want to save genepop file (output.gen forexample)
+--Click OK
 
-#Step 7. Please travell to R/DAPC in github repository via link below
-https://github.com/thinhdoanvu/EzRAD/tree/master/R/DAPC
+@@@@@@@Please travell to R/DAPC in github repository via link below https://github.com/thinhdoanvu/EzRAD/tree/master/R/DAPC
 
-
+#Step 7. Convert to Alerquin format for detect Fst and AMOVA
+-Click Addins - GeneAlEx again
+-Export data menu - Choose Alerquin format
+- Choose some params for output file like so:
+--Data format: Codominant
+--Output: Check "To text file"
+--Click OK
+--Choose the path_folder_you want to save Arlequin file (output.arp forexample)
+--Click OK
+@@@@@@@Please travell to Alerquin in github repository via link below https://github.com/thinhdoanvu/EzRAD/tree/master/Arlequin
