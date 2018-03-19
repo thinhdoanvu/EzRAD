@@ -1,0 +1,92 @@
+#Step 1. Convert Alerquin format from GenAlEx at Step 7: https://github.com/thinhdoanvu/EzRAD/tree/master/GenAlex 
+#Step 2. Download Arlequin from here: http://cmpg.unibe.ch/software/arlequin35/win/WinArl35.zip
+#Step 3. Unzip WinArl35.zip and create shortcut to Desktop folder
+#Step 4. Start Alerquin, Please check Fig1
+--4.1. Click Open Project, travel to the_path_you_saved_arp_file
+--4.2. Click Tab Setting, choose the last line inside: General Setting
+--4.3. Adjust Polimorphism Control by Allowed missing level per site: 0.05 0.1, this is belong your input data. In my case, I choose 10%.
+--4.4. Choose Genetics Structure line.
+----4.4.1. Population comparision for Fst pairwise. 999 for permutation and 0.05 for significant
+----4.4.2. AMOVA: tick Standard AMOVA computation
+----4.4.2. AMOVA: 9999 for the number of permutations
+--Click Start
+
+#Step 5. Wait a moment to check your results.
+
+List of loci with too much missing data :
+-----------------------------------------
+
+NONE
+
+
+--------------------------
+AMOVA design and results :
+--------------------------
+
+           Weir, B.S. and Cockerham, C.C. 1984.
+           Excoffier, L., Smouse, P., and Quattro, J. 1992.
+           Weir, B. S., 1996.
+----------------------------------------------------------------------
+ Source of                  Sum of      Variance         Percentage
+ variation      d.f.        squares     components       of variation
+----------------------------------------------------------------------
+ Among
+ populations      4       1691.730        7.34439 Va            17.08
+
+ Within
+ populations    261       9309.225       35.66753 Vb            82.92
+----------------------------------------------------------------------
+ Total          265      11000.955       43.01192
+----------------------------------------------------------------------
+ Fixation Index      FST :      0.17075
+----------------------------------------------------------------------
+
+Significance tests (10098 permutations)
+------------------
+
+Va and FST : P(rand. value > obs. value)  =  0.00000
+             P(rand. value = obs. value)  =  0.00000
+                                  P-value =  0.00000+-0.00000
+
+------------------------
+Population pairwise FSTs
+------------------------
+
+
+Distance method: Pairwise differences
+                     1         2         3         4         5
+           1   0.00000
+           2   0.03583   0.00000
+           3   0.15420   0.12197   0.00000
+           4   0.25659   0.23252   0.32767   0.00000
+           5   0.14687   0.10013   0.21381   0.29384   0.00000
+
+
+------------
+FST P values
+------------
+
+Number of permutations : 1023
+
+                       1                 2                 3                 4                 5
+           1           *
+           2   0.00000+-0.0000           *
+           3   0.00000+-0.0000   0.00000+-0.0000           *
+           4   0.00000+-0.0000   0.00000+-0.0000   0.00000+-0.0000           *
+           5   0.00000+-0.0000   0.00000+-0.0000   0.00000+-0.0000   0.00000+-0.0000           *
+
+
+------------
+Matrix of significant Fst P values
+Significance Level=0.0500
+------------
+
+Number of permutations : 1023
+
+                     1         2         3         4         5
+           1                   +         +         +         +
+           2         +                   +         +         +
+           3         +         +                   +         +
+           4         +         +         +                   +
+           5         +         +         +         +          
++ means for significant p-value (less than or equal with 0.05)
