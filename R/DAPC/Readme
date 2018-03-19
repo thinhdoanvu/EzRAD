@@ -35,30 +35,8 @@ adegenetServer()
 
 Please, check Fig 1
 
-#Step 4. How to convert VCF to Genepop format?
-Using PGD Spider and Choose parameters like so:
-4.1. VCF Parser question Tab
--Select input/output
--- Data input file (File Format): VCF file
--- Data output file (File Format): Genepop
--- Select input file: path_you_saved_VCF_file
--- Select output file: path_you_will_save_Genepop_file
--Create/Edit SPID file
---Answer some questions below:
----What is the ploid of the data: diploid
----Do you want to include a file with population definition? 
-====YES
----Select population definition file: path_your_popmap_file_which_you_saved
-
-4.2. GENEPOP Writer question
--Answer only ONE question below:
---Specify which data type should be included in the GENEPOP file (Genepop can be analyze on the data type per file)
-====SNP
-
-4.3. Click Save and Apply
--Click SAVE button
-
-4.5. Click Convert Button
+#Step 4. How to convert to Genepop format from GenAlEx?
+Please check again in GeneAlex repository: https://github.com/thinhdoanvu/EzRAD/tree/master/GenAlex
 
 #Step 5. Edit your Genepop file into confortable with PCA on R
 5.1. Open your genepop file by Notepad++
@@ -69,6 +47,45 @@ Group1_Site1numbered will be change 1_numbered. For example: 1_1 (G1_S11), 1_2 (
 Group1_Site2numbered will be change 2_numbered. For example: 2_1 (G1_S21), 2_2 (G1_S12), 2_3(G1_S23)
 ...
 Like this:
+1_01, 0101 0202 0102 0102...
+1_02, 0101 0202 0102 0102...
+...
+5_26, 0101 0102 0202 0101...
+5_27, 0101 0102 0102 0102...
+
+#Next, replace every space character by tab character
+Using, Ctrl + H in Notepad++ and Find: space (" ")  by tab ("\t"), click replace all
+#Finally, your file like this
+Title	line:""
+SNP_1
+SNP_2
+SNP_3
+SNP_4
+SNP_5
+SNP_6
+SNP_7
+...
+Pop
+1_01,	0101	0202	0102	0102
+...
+Pop
+2_01,	0101	0102	0202	0102
+...
+Pop
+3_01,	0101	0101	0202	0101
+...
+Pop
+4_01,	0101	0101	0202	0101
+...
+Pop
+5_01,	0101	0102	0202	0102
+...
+
+#Save as your file to xxx.gen
+
+#Step 6. Travel to DAPC web server screen in R
+Choose Input file - Browse: path_your_genepop file
+
 
 
 
