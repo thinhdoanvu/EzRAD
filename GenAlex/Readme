@@ -1,1 +1,37 @@
-#Convert VCF file to Genepop
+#Step 1. Convert VCF file to Genepop
+Using PGD Spider and Choose parameters like so:
+1.1. VCF Parser question Tab
+-Select input/output
+-- Data input file (File Format): VCF file
+-- Data output file (File Format): Genepop
+-- Select input file: path_you_saved_VCF_file
+-- Select output file: path_you_will_save_Genepop_file
+-Create/Edit SPID file
+--Answer some questions below:
+---What is the ploid of the data: diploid
+---Do you want to include a file with population definition? 
+====YES
+---Select population definition file: path_your_popmap_file_which_you_saved
+
+#Step 2. Down load GeneAlEx via link:
+-Using version 6.5.02: http://biology-assets.anu.edu.au/GenAlEx/Download_files/GenAlEx%206.502%20Download.zip
+
+#Step 3. Unzip download file and create shortcut into your Desktop folder
+
+#Step 4. Open GeneAlEx
+-If you was asked some question inside, please choose YES and Click Enable to can go to next step
+
+#Step 5. In my case, I use MS Office 2013, so you may have different choice. Please find menu GeneAlEx so far...
+--Click menu Addins
+--Choose GeneAlEx
+--Import data type: genepop
+--Import genepop option window appear: 
+----Click Single Genepop file
+---Click Codominant in Data format option
+----Click OK
+--Choose the path_you_saved_genepop_file in new Window
+--Choose the path_you_want_to_save GeneAlEx file (beware need to add ".xlsx" in your file name that can be open in Excel)
+
+#Step 6. Convert to Genepop file again use for PCA in R
+
+
