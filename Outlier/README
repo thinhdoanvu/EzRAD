@@ -34,4 +34,14 @@ SNP_26	0.158333	0.382979	0.99724	--
               =D2<=0.05
               Explaination: D2 means column D, 2nd row. <= 0.05 means for less than or equal 0.05
               Result is TRUE or FALSE
-         9.2. 
+         9.2. For Divergent column, use this command in 2nd row
+              =ROUND(D2,3)>=0.98
+              Explaination: D2 means column D, 2nd row. >= 0.98 means for greater than or equal 0.98.
+              The ROUND function rounds a number to a specified number of digits. For example, if cell A1 contains 23.7825, and you want to round that value to two decimal places, you can use the following formula:=ROUND(A1, 2). The result of this function is 23.78.
+         9.3. Select 1st row (header row), click menu DATA - Filter. You will see header row now can be select by value
+              Click Balance cloumn and choose only TRUE value, then choose all rows inside, choose YELLOW color for that rows
+              Then choose all value for this column
+         9.4. Click Divergent cloumn and choose only TRUE value, then choose all rows inside, choose RED color for that rows
+              Then choose all value for this column
+         9.5. Click FDR column, choose OUTLIER value. That is all your OUTLIER, please select value in Loci column and paste in other sheet.
+In this section, you can see that there are many outlier detect (yellow rows), but only rows with FDR <= 0.05 is real OUTLIER loci.
