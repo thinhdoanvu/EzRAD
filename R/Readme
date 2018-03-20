@@ -11,6 +11,9 @@ This instruction for relatednees detection
               Press: Ctrl + H
               Search value: \t0\t
               Replace value: \t000\t
+              Search value: \t
+              Replace value:  (1 space)
+              Replace 2 space by 1 space
               Because, we need to encode input file with 3-character code
          4.5. Save file with name: input.relatedness
 #Step 5. Open R studio
@@ -19,6 +22,7 @@ This instruction for relatednees detection
           Loading required package: related
           Loading required package: tools
           Loading required package: ggplot2
+          If you have problem with related require x32 R environment, Click Tools - Global Options - Change to 32 bits environment, restart R
 #Step 7. input <- read.table("the_path_you_saved_relatedness file",header = FALSE, sep = " ", stringsAsFactors = FALSE)
           Forexample: input <- read.table("/home/thinhdv/input.related",header = FALSE, sep = " ", stringsAsFactors = FALSE)
 #Step 8. output <- coancestry (input, trioml =2, wang =2, dyadml =2, ci95.num.bootstrap=50)
