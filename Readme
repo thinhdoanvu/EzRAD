@@ -8,4 +8,8 @@
   3.2. Bayescan
 4. Detect Maximum Likelihood Estimation of Relatedness using EM Algorithm
 5. Hardy-Weinberg (HWE) detecttion by GenAlEx
-
+6. Remove Individuals with relatedness value >=0.9 (Wang,2007 and Milligan 2003)
+7. Remove Divergent, Outlier, Balance loci => Neutral Loci for tets 2,5 again.
+8. Keep only Divergent Loci, and use for test 2,5 again
+9. Using Neutral data for Effected population size by NeEstimator
+10. Using Neutral data for migration test
