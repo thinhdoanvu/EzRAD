@@ -1,4 +1,6 @@
-#Step 1. Download this file to your machine
+This instruction for relatednees detection
+--------------------------------------------------------------------------------------
+#Step 1. Download relatedness_1.0.zip file to your machine
 #Step 2. Start R studio
 #Step 3. Click Menu Tools - Install packages - choose the path_you_saved_related_1.0.zip
 #Step 4. Open Excel file which you import genepop file inside and used for converting to Alerquin or Genepop,etc... and follow this:
