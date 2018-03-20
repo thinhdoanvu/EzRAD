@@ -20,4 +20,18 @@ Please, download Lositan from here because file is too large for upload to here:
          False Disc. rate: 0.05 or 0.01
 #Step 6. Click RUN and wait for compeleting
 #Step 7. When you finsish, please click window result. Press Ctrl + C - then open Excel - Ctrl + V for paste
-#
+
+#Step 8. Insert header line in EXCEL like this:
+Loci	Het	Fst	pvalue	FDR	Balance	Divergent
+For example:
+Loci	Het	Fst	pvalue	FDR	Balance	Divergent
+SNP_8	0.183333	0.446809	0.997041	--	
+SNP_19	0.2	0.489362	0.995177	--	
+SNP_26	0.158333	0.382979	0.99724	--	
+
+#Step 9. Now, we will use some formulars in Excel
+         9.1. For Balance coulumn, use this command in 2nd row 
+              =D2<=0.05
+              Explaination: D2 means column D, 2nd row. <= 0.05 means for less than or equal 0.05
+              Result is TRUE or FALSE
+         9.2. 
