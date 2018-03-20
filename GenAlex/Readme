@@ -1,3 +1,6 @@
+========================================================================================================
+THIS INSTRUCTION USE FOR PCA DETECTION
+========================================================================================================
 #Step 1. Convert VCF file to Genepop
 Using PGD Spider and Choose parameters like so:
 1.1. VCF Parser question Tab
@@ -44,6 +47,9 @@ Using PGD Spider and Choose parameters like so:
 
 @@@@@@@Please travell to R/DAPC in github repository via link below https://github.com/thinhdoanvu/EzRAD/tree/master/R/DAPC
 
+========================================================================================================
+THIS INSTRUCTION USE FOR FST AND AMOVA TEST
+========================================================================================================
 #Step 7. Convert to Alerquin format for detect Fst and AMOVA
 -Click Addins - GeneAlEx again
 -Export data menu - Choose Alerquin format
@@ -54,3 +60,15 @@ Using PGD Spider and Choose parameters like so:
 --Choose the path_folder_you want to save Arlequin file (output.arp forexample)
 --Click OK
 @@@@@@@Please travell to Alerquin in github repository via link below https://github.com/thinhdoanvu/EzRAD/tree/master/Arlequin
+
+========================================================================================================
+THIS INSTRUCTION USE FOR HWE CALCULATION
+========================================================================================================
+#Step 8. Open GenAlEx file which you inported genpop format inside
+#Step 1. Click GenAlEx addins - Frequency... menu
+#Step 2. Default choosing - OK
+#Step 3. Tick Het, Fstat & Poly by Pop - OK
+#Step 4. Wait until Finish - you will have AFP and HFP sheet
+#Step 5. Travel to HFP sheet, Click Line 12th and Click Menu DATA - Filter
+#Step 6. Filter by UNCHECK Blank value
+#Step 7. Drag into some next lines - SUMMARY of Het value
