@@ -48,3 +48,14 @@ In this section, you can see that there are many outlier detect (yellow rows), b
 YELLOW color means for Balance selection
 RED color measn for Divergent loci
 GRIS color means for Neutral loci
+---------------------------------------------------------------------------------------------------------------
+Bayescan2.1
+--------------------------------------------------------------------------------------------------------------
+#Step 1. Download file from this resposity and Unzip file to your folder
+#Step 2. Convert VCF to GESTE/Bayescan. REMEMBER CHOOSE SNP FOR GESTE/BAYESCAN WRITER QUESTION
+#Step 3. Open the path_you_unzip_Bayescan2.1 and Choose version compatable with your PC. I recommend you choose BayeScan2.1_win32bits_GUI.exe for Windows and you want to set default value for this programs
+#Step 4. Choose the path file for input and output file 
+#Step 5. Choose prefix name for output, beacuse you will have 4 - 5 files output with the same name. I choose output value.
+#Step 6. Wait until finish.
+#Step 7. Find fst.txt suffix file name which use for R analysis 
+#
