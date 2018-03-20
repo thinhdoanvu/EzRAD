@@ -5,7 +5,7 @@ This instruction for relatednees detection
 #Step 3. Click Menu Tools - Install packages - choose the path_you_saved_related_1.0.zip
 #Step 4. Open Excel file which you import genepop file inside and used for converting to Alerquin or Genepop,etc... and follow this:
          4.1. Copy lines from 4th to the end (1-3 are headers, so we don't need to copy), and paste them in new SHEET
-         4.2. Delete 2nd column (POP ID column)
+         4.2. Delete 2nd column (POP_ID column)
          4.3. Copy all to new text file (using Notepad++)
          4.4. Repace 0 by 000. Use this command 
               Press: Ctrl + H
