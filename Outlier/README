@@ -7,3 +7,17 @@ Web page Mcheza: http://popgen.net/soft/mcheza
 
 Paper Lositan: http://www.biomedcentral.com/1471-2105/9/323/
 Paper Mcheza: http://bioinformatics.oxfordjournals.org/content/27/12/1717.abstract
+
+Please, download Lositan from here because file is too large for upload to here: https://app.box.com/file/283515998771
+
+#Step 1. Unzip folder lositan
+#Step 2. Run file runLocal.bat if your are using Windows version (runLocal.sh for Linux)
+#Step 3. Click Menu FILE - Open GenePop data - Choose the_path_you_saved_genepop file after convert from PGD Spider OR (the file you converted from GenAlex with .gen extension)
+#Step 4. If you see Fst announcement for population, click OK to go next
+#Step 5. CPU cores params, set default
+         #of sims x1000, choose at least 50 to 5000 (depend your super computer)
+         confident interval: 95% or 99%
+         False Disc. rate: 0.05 or 0.01
+#Step 6. Click RUN and wait for compeleting
+#Step 7. When you finsish, please click window result. Press Ctrl + C - then open Excel - Ctrl + V for paste
+#
