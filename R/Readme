@@ -1,0 +1,30 @@
+#Step 1. Download this file to your machine
+#Step 2. Start R studio
+#Step 3. Click Menu Tools - Install packages - choose the path_you_saved_related_1.0.zip
+#Step 4. Open Excel file which you import genepop file inside and used for converting to Alerquin or Genepop,etc... and follow this:
+         4.1. Copy lines from 4th to the end (1-3 are headers, so we don't need to copy), and paste them in new SHEET
+         4.2. Delete 2nd column (POP ID column)
+         4.3. Copy all to new text file (using Notepad++)
+         4.4. Repace 0 by 000. Use this command 
+              Press: Ctrl + H
+              Search value: \t0\t
+              Replace value: \t000\t
+              Because, we need to encode input file with 3-character code
+         4.5. Save file with name: input.relatedness
+#Step 5. Open R studio
+#Step 6. Use this command first: require (related)
+         Result are: 
+          Loading required package: related
+          Loading required package: tools
+          Loading required package: ggplot2
+#Step 7. input <- read.table("the_path_you_saved_relatedness file",header = FALSE, sep = " ", stringsAsFactors = FALSE)
+          Forexample: input <- read.table("/home/thinhdv/input.related",header = FALSE, sep = " ", stringsAsFactors = FALSE)
+#Step 8. output <- coancestry (input, trioml =2, wang =2, dyadml =2, ci95.num.bootstrap=50)
+          We want to check relatedness with 95% confident and 50 replicate. If you want more you can choose higher value
+          95% confident (xxx=2)
+          50 replicate (bootstrap=50)
+#Stepp 9. Read values
+          output$relatedness
+#Step 10. Write to EXCEL file
+          write.csv(output$relatedness,file="the_path_you_want_to_save_out.related.csv")
+#Step 11. Open output file in EXCEL and sort columns by Decrease ordered, and check values with >0.9. We will summary all individuals with this value and need be remove them out in next filtering step
