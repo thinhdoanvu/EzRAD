@@ -56,6 +56,12 @@ Bayescan2.1
 #Step 3. Open the path_you_unzip_Bayescan2.1 and Choose version compatable with your PC. I recommend you choose BayeScan2.1_win32bits_GUI.exe for Windows and you want to set default value for this programs
 #Step 4. Choose the path file for input and output file 
 #Step 5. Choose prefix name for output, beacuse you will have 4 - 5 files output with the same name. I choose output value.
-#Step 6. Wait until finish.
+#Step 6. If you want to set another value differ with default, please check Options tab (Not recommended). 
+#Step 7. Clcik Start and wait until finish.
 #Step 7. Find fst.txt suffix file name which use for R analysis 
-#
+#Step 8. Start R studio
+         Copy and paste this command in R window: 
+         first: source("the_path_of_BayeScan2.1/R functions/plot_R.r")
+         second: plot_bayescan("the_path_of_fst.txt suffix file",FDR=0.05)
+         If you have any OUTLIER LOCI, black line will be appear and you can see all of them on the right of this line
+         
