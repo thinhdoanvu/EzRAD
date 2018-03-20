@@ -45,3 +45,6 @@ SNP_26	0.158333	0.382979	0.99724	--
               Then choose all value for this column
          9.5. Click FDR column, choose OUTLIER value. That is all your OUTLIER, please select value in Loci column and paste in other sheet.
 In this section, you can see that there are many outlier detect (yellow rows), but only rows with FDR <= 0.05 is real OUTLIER loci.
+YELLOW color means for Balance selection
+RED color measn for Divergent loci
+GRIS color means for Neutral loci
