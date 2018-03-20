@@ -52,7 +52,7 @@ GRIS color means for Neutral loci
 Bayescan2.1
 --------------------------------------------------------------------------------------------------------------
 #Step 1. Download file from this resposity and Unzip file to your folder
-#Step 2. Convert VCF to GESTE/Bayescan. REMEMBER CHOOSE SNP FOR GESTE/BAYESCAN WRITER QUESTION
+#Step 2. Convert VCF to GESTE/Bayescan by PGDSPIDER program. REMEMBER CHOOSE SNP FOR GESTE/BAYESCAN WRITER QUESTION
 #Step 3. Open the path_you_unzip_Bayescan2.1 and Choose version compatable with your PC. I recommend you choose BayeScan2.1_win32bits_GUI.exe for Windows and you want to set default value for this programs
 #Step 4. Choose the path file for input and output file 
 #Step 5. Choose prefix name for output, beacuse you will have 4 - 5 files output with the same name. I choose output value.
