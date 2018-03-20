@@ -1,0 +1,33 @@
+#Step 1. Download NeEstimator in this resporitory and Unzip this file to your PC
+#Step 2. Run file name: NeEstimator 2.01.jar
+#Step 3. INPUT CHOICE
+         3.1. Directory: BROWSE = path_you_saved_your_.gen file (NO CLICK ON FILE)
+         3.2. Click arrow in Choose File and seclect genepop file (.gen)
+         3.3. Data format (GENEPOP)
+#Step 4. OUTPUT CHOICE
+         3.1. Directory: BROWSE = path_you_want_to_save_your_output file (NO CLICK ON FILE)
+         3.2. File name: Type of name of Output file (If you want to save - NOT RECOMMEND) => Default name is better
+#Step 5. Methods setup
+         5.1. Choose Default value
+#Step 6. Click RUN NeEstimator
+#Step 7. Reads Ne Estimate value
+         7.1. Open file xxxNe.txt by Notepad++
+         7.2. Find some lines begin with forexample like below
+              Population     1 [GR1_S101]  (Number of Individuals = 26)
+              POP            1 [name of indv begin with]  (How may individuas inside)
+         7.3. Find this line
+         --------------------------------------------------------------------------
+         Lowest Allele Frequency Used     0.050       0.020       0.010         0+
+         --------------------------------------------------------------------------
+         LINKAGE DISEQUILIBRIUM METHOD
+
+          Harmonic Mean Sample Size =       28.7        28.7        28.7        28.7
+          Independent Comparisons =      56081       64901       78931       78931
+          OverAll r^2 =                  0.04012     0.03984     0.03976     0.03976
+          Expected r^2 Sample =          0.03881     0.03879     0.03878     0.03878
+          Estimated Ne^ =                  232.3       290.2       314.0       314.0
+
+          95% CIs for Ne^
+          * Parametric                     170.3       204.7       223.0       223.0
+                                           360.3       491.1       523.6       523.6
+#Step 8. We will use these value for analysis further
