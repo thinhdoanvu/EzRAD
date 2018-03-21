@@ -1,0 +1,527 @@
+#!/bin/bash
+ln ../../programs/./vcftools_0.1.13/bin/./vcftools
+module load vcflib/1.0
+module load parallel/20160722
+
+#maf
+vcftools --vcf Final90.5.5.recode.vcf --maf 0.01 --recode --recode-INFO-all --out af001
+After filtering, kept 148 out of 148 Individuals
+After filtering, kept 31967 out of a possible 42486 Sites
+
+#dp
+dp=5
+vcftools --vcf af001.recode.vcf --min-meanDP $dp --recode --recode-INFO-all --out dp5
+After filtering, kept 148 out of 148 Individuals
+After filtering, kept 31868 out of a possible 31967 Sites
+
+vcftools --vcf dp5.recode.vcf --het
+nano out.het
+
+#######################################################################
+#loai bo indel
+vcftools --vcf dp5.recode.vcf --remove-indels --recode --recode-INFO-all --out indel
+After filtering, kept 148 out of 148 Individuals
+After filtering, kept 18407 out of a possible 31868 Sites
+
+vcftools --vcf indel.recode.vcf  --het
+nano out.het
+
+#saf
+vcffilter -f "SAF / SAR > 100 & SRF / SRR > 100 | SAR / SAF > 100 & SRR / SRF > 100" -s indel.recode.vcf > saf.vcf
+awk '!/#/' saf.vcf | wc -l
+11240
+
+vcftools --vcf saf.vcf  --het
+nano out.het
+
+#mqm
+vcffilter -f "MQM / MQMR > 0.95 & MQM / MQMR < 1.05" saf.vcf > mqm.vcf
+grep -v '#' mqm.vcf | wc -l
+10159
+
+vcftools --vcf mqm.vcf  --het
+nano out.het
+
+#LOC AB
+vcffilter -f "AB >0.25 & AB <0.75 | AB <0.01" mqm.vcf > ab.vcf
+grep -v '#' ab.vcf | wc -l
+8907
+
+vcftools --vcf ab.vcf  --het
+nano out.het
+
+#Q40 - Q30
+vcftools --vcf indel.recode.vcf --minQ 40 --recode --recode-INFO-all --out Q40
+After filtering, kept 148 out of 148 Individuals
+After filtering, kept 17927 out of a possible 18407 Sites
+
+vcftools --vcf Q40.recode.vcf  --het
+nano out.het
+
+#prim
+vcfallelicprimitives Q40.recode.vcf --keep-info --keep-geno > prim.vcf
+vcftools --vcf prim.vcf --remove-indels --recode --recode-INFO-all --out prim.indel
+vcftools --vcf prim.indel.recode.vcf --min-alleles 2 --max-alleles 2 --recode --recode-INFO-all --out prim.indel.2
+
+
+vcftools --vcf prim.indel.2.recode.vcf  --het
+nano out.het
+
+######################################################
+
+vcftools --vcf prim.indel.2.recode.vcf --missing-indv
+
+grep -v 'IN' out.imiss | cut -f5 > totalmissing
+gnuplot
+set terminal dumb size 120, 30
+set autoscale 
+unset label
+set title "Histogram of % missing data per individual"
+set ylabel "Number of Occurrences"
+set xlabel "% of missing data"
+#set yr [0:100000]
+binwidth=0.01
+bin(x,width)=width*floor(x/width) + binwidth/2.0
+plot 'totalmissing' using (bin($1,binwidth)):(1.0) smooth freq with boxes
+exit
+                                                  Histogram of % missing data per individual
+
+                       60 +-----------------------------------------------------------------------------------------+
+                          |        +        +        +        +        +        +        +        +        +        |
+                          |*                                  'totalmissing' using (bin($1,binwidth)):(1.0) ******* |
+                          |*                                                                                        |
+                       50 |*+                                                                                     +-|
+                          |*                                                                                        |
+                          |*                                                                                        |
+                          |*                                                                                        |
+                       40 |*+                                                                                     +-|
+                          |*                                                                                        |
+                          |*                                                                                        |
+                       30 |*+                                                                                     +-|
+                          |*                                                                                        |
+                          |*                                                                                        |
+                          |**                                                                                       |
+                       20 |**                                                                                     +-|
+                          |***                                                                                      |
+                          |****                                                                                     |
+                          |****                                                                                     |
+                       10 |*****                                                                                  +-|
+                          |*****                                                                                    |
+                          |*****                                                                                    |
+                          |******* +        + ****   +        +        +        +        +        +        +        |
+                        0 +-----------------------------------------------------------------------------------------+
+                          0       0.1      0.2      0.3      0.4      0.5      0.6      0.7      0.8      0.9       1
+                                                               % of missing data
+
+awk '$5 > 0.1' out.imiss | cut -f1 > lowDP.indv
+nano lowDP.indv
+
+vcftools --vcf prim.indel.2.recode.vcf --remove lowDP.indv --recode --recode-INFO-all --out rmind
+After filtering, kept 133 out of 148 Individuals
+After filtering, kept 17174 out of a possible 17174 Sites
+
+vcftools --vcf rmind.recode.vcf --het
+nano out.het
+
+
+#qual/dp
+#QUAL / DP < 0.1 0.5 0.75 <<< thi het cang co nhieu gia tri <0
+vcffilter -f "QUAL / DP > 0.25" rmind.recode.vcf > fil.vcf
+vcftools --vcf fil.vcf --site-quality
+cut -f3 out.lqual > qual.depth
+grep -v 'D' qual.depth | awk -v x=133 '{print $1/x}' > meanqualsite
+#x=individuals numbers
+
+gnuplot
+set terminal dumb size 120, 30
+set autoscale
+set xrange [05:150] 
+unset label
+set title "Histogram of mean quality per site"
+set ylabel "Number of Occurrences"
+set xlabel "Mean Quality"
+binwidth=1
+bin(x,width)=width*floor(x/width) + binwidth/2.0
+set xtics 5
+plot 'meanqualsite' using (bin($1,binwidth)):(1.0) smooth freq with boxes
+exit
+                                                      Histogram of mean quality per site
+
+                       200 +----------------------------------------------------------------------------------------+
+                           |* +  +  +  +  +  +  +   +  +  +  +  +  +  +  +  +  +  +  +  +  +   +  +  +  +  +  +  +  |
+                       180 |**                                'meanqualsite' using (bin($1,binwidth)):(1.0) *******-|
+                           |**                                                                                      |
+                           |**                                                                                      |
+                       160 |**                                                                                    +-|
+                           |**                                                                                      |
+                       140 |**                                                                                    +-|
+                           |****                                                                                    |
+                       120 |****                                                                                  +-|
+                           |****                                                                                    |
+                       100 |****                                                                                  +-|
+                           |**** *                                                                                  |
+                           |*******                                                                                 |
+                        80 |*******                                                                               +-|
+                           |*******                                                                                 |
+                        60 |**********                                                                            +-|
+                           |********** **    **                                                                     |
+                        40 |*************   *******   **        **      **                                        +-|
+                           |*************************************** ******   ***    *** *  ***  ** **               |
+                           |***************************************************** *************************  ** *   |
+                        20 |****************************************************************************************|
+                           |****************************************************************************************|
+                         0 +----------------------------------------------------------------------------------------+
+                           5  10 15 20 25 30 35 40  45 50 55 60 65 70 75 80 85 90 9 10 10 110 11 12 12 13 13 14 14 150
+                                                                 Mean Quality
+
+paste out.lqual meanqualsite | awk -v x=90 '$4>x' | awk '{print $1"\t"$2}' > rmqual.site
+#Col1: Contigs
+#Col2: Positoion
+vcftools --vcf fil.vcf --exclude-positions rmqual.site --recode --recode-INFO-all --out meanqual
+After filtering, kept 133 out of 133 Individuals
+After filtering, kept 7623 out of a possible 12386 Sites
+
+
+vcftools --vcf meanqual.recode.vcf --het
+nano out.het
+
+
+#maxdp
+cut -f8  meanqual.recode.vcf | grep -oe "DP=[0-9]*" | sed -s 's/DP=//g' > fil.depth
+grep -v '#' fil.vcf | cut -f1,2,6 > fil.loci.qual
+awk '{ sum += $1; n++ } END { if (n > 0) print sum / n; }' fil.depth
+2406.06
+python -c "print int(2406+3*(2406**0.5))"
+2553
+
+paste fil.loci.qual fil.depth | awk -v x=2553 '$4 > x' | awk '$3 < 2 * $4' > fil.lowQDloci
+vcftools --vcf meanqual.recode.vcf --site-depth --exclude-positions fil.lowQDloci --out fil
+cut -f3 fil.ldepth > fil.site.depth
+grep -v 'D' fil.site.depth | awk -v x=134 '{print $1/x}' > meandepthpersite
+#x=individuals numbers
+
+gnuplot
+set terminal dumb size 120, 30
+set autoscale
+set xrange [05:150] 
+unset label
+set title "Histogram of mean depth per site"
+set ylabel "Number of Occurrences"
+set xlabel "Mean Depth"
+binwidth=1
+bin(x,width)=width*floor(x/width) + binwidth/2.0
+set xtics 5
+plot 'meandepthpersite' using (bin($1,binwidth)):(1.0) smooth freq with boxes
+exit
+                                                       Histogram of mean depth per site
+
+                       700 +----------------------------------------------------------------------------------------+
+                           |  + **  +  +  +  +  +   +  +  +  +  +  +  +  +  +  +  +  +  +  +   +  +  +  +  +  +  +  |
+                           |    **                        'meandepthpersite' using (bin($1,binwidth)):(1.0) ******* |
+                       600 |-+  **                                                                                +-|
+                           |   ****                                                                                 |
+                           |   ****                                                                                 |
+                           |   ****                                                                                 |
+                       500 |-+*****                                                                               +-|
+                           | ******                                                                                 |
+                           | ******                                                                                 |
+                       400 |-*******                                                                              +-|
+                           | *******                                                                                |
+                           | *******                                                                                |
+                       300 |-*******                                                                              +-|
+                           | *******                                                                                |
+                           | ********                                                                               |
+                       200 |-********                                                                             +-|
+                           | ********                                                                               |
+                           |**********                                                                              |
+                           |**********                                                                              |
+                       100 |************                                                                          +-|
+                           |**************                                                                          |
+                           |*************************  +  +  +  +  +  +  +  +  +  +  +  +  +   +  +  +  +  +  +  +  |
+                         0 +----------------------------------------------------------------------------------------+
+                           5  10 15 20 25 30 35 40  45 50 55 60 65 70 75 80 85 90 9 10 10 110 11 12 12 13 13 14 14 150
+                                                                  Mean Depth
+
+vcftools --vcf meanqual.recode.vcf --recode --recode-INFO-all --max-meanDP 25 --exclude-positions fil.lowQDloci --out maxDP
+After filtering, kept 133 out of 133 Individuals
+After filtering, kept 6131 out of a possible 7623 Sites
+Run Time = 3.00 seconds
+
+
+vcftools --vcf maxDP.recode.vcf --het
+nano out.het
+
+vcffilter -f "PAIRED > 0.05 & PAIREDR > 0.05 & PAIREDR / PAIRED < 1.75 & PAIREDR / PAIRED > 0.05 | PAIRED < 0.05 & PAIREDR < 0.05" -s maxDP.recode.vcf > pair.vcf
+grep -v '#' pair.vcf | wc -l
+5025
+
+vcftools --vcf pair.vcf --het
+nano out.het
+
+#af 0.05
+vcftools --vcf pair.vcf --maf 0.05 --recode --recode-INFO-all --out af005
+After filtering, kept 133 out of 133 Individuals
+After filtering, kept 3206 out of a possible 5025 Sites
+
+vcftools --vcf af005.recode.vcf --het
+nano out.het
+
+vcftools --vcf af005.recode.vcf --hardy
+awk -v x=0.000005 '$6<x' out.hwe | awk '{print $1"\t"$2}' | awk '!/POS/' > hardy.site
+vcftools --vcf af005.recode.vcf --exclude-positions hardy.site --recode --recode-INFO-all --out hardy
+After filtering, kept 133 out of 133 Individuals
+After filtering, kept 822 out of a possible 3206 Sites
+
+
+vcftools --vcf hardy.recode.vcf --het
+nano out.het
+
+
+vcftools --vcf hardy.recode.vcf --max-missing 0.95 --recode --recode-INFO-all --out geno95
+After filtering, kept 133 out of 133 Individuals
+After filtering, kept 713 out of a possible 822 Sites
+
+
+vcftools --vcf geno95.recode.vcf --het
+nano out.het
+
+vcftools --vcf vcftools --vcf geno95.recode.vcf --hwe 0.01 --recode --recode-INFO-all --out hwe1
+After filtering, kept 133 out of 133 Individuals
+After filtering, kept 492 out of a possible 492 Sites
+
+
+
+
+vcftools --vcf hwe1.recode.vcf --het
+nano out.het
+
+
+#LOC CIGAR = 1X - chi quan tam den viec thay the tung Allele
+awk '/#/'  hwe1.recode.vcf > cigar.vcf
+grep -w "CIGAR=1X" hwe1.recode.vcf >> cigar.vcf
+
+grep CHROM cigar.vcf | cut -f10- | tr '\t' '\n' > popRMI
+awk '{print substr($0,4,2)}' popRMI > popidRMI
+paste popRMI popidRMI > popmap.5.5
+
+uniq popidRMI > popid_uniqRMI
+t=$(cat popid_uniqRMI)
+for i in $t
+do
+  grep -w $i popmap.5.5 > $i.keep
+done
+
+ls *keep | sed 's/.keep//g' | parallel 'vcftools --vcf hwe1.recode.vcf --keep {}.keep --missing-site --out {}'
+rm  all.badlociRMI
+cat *.lmiss | awk '!/CHR/' >> all.badlociRMI
+
+cut -f6 all.badlociRMI > missing.lociRMI
+gnuplot << \EOF
+set terminal dumb size 120, 30
+set autoscale 
+unset label
+set title "Histogram of % missing data per loci"
+set ylabel "Number of Occurrences"
+set xlabel "% of missing data"
+#set yr [0:100000]
+binwidth=0.01
+bin(x,width)=width*floor(x/width) + binwidth/2.0
+plot 'missing.lociRMI' using (bin($1,binwidth)):(1.0) smooth freq with boxes
+pause -1
+EOF
+
+                                                      Histogram of % missing data per loci
+
+                       1800 +---------------------------------------------------------------------------------------+
+                            |   *          +             +              +              +             +              |
+                            |   *                          'missing.lociRMI' using (bin($1,binwidth)):(1.0) ******* |
+                       1600 |-+ *                                                                                 +-|
+                            |   *                                                                                   |
+                       1400 |-+ *                                                                                 +-|
+                            |   *                                                                                   |
+                            |   *                                                                                   |
+                       1200 |-+ *                                                                                 +-|
+                            |   *                                                                                   |
+                       1000 |-+ *                                                                                 +-|
+                            |   *                                                                                   |
+                            |   *                                                                                   |
+                        800 |-+ *                                                                                 +-|
+                            |   *                                                                                   |
+                        600 |-+ *                                                                                 +-|
+                            |   *                                                                                   |
+                            |   *                                                                                   |
+                        400 |-+ *                                                                                 +-|
+                            |   *                                                                                   |
+                        200 |-+ *                                                                                 +-|
+                            |   *    ****                                                                           |
+                            |   ******  *******  ***     +              +              +             +              |
+                          0 +---------------------------------------------------------------------------------------+
+                            0             0.05          0.1            0.15           0.2           0.25           0.3
+                                                                % of missing data
+
+awk '$6 > 0.05' all.badlociRMI | cut -f1,2 > bad.lociRMI
+vcftools --vcf hwe1.recode.vcf --exclude-positions bad.lociRMI --recode --recode-INFO-all --out badlocirm
+After filtering, kept 133 out of 133 Individuals
+After filtering, kept 211 out of a possible 492 Sites
+
+vcftools --vcf badlocirm.recode.vcf --het
+nano out.het
+
+
+
+
+
+#TAM THOI DEN DAY ROI U TU XU LY TIEP
+
+
+#max-missing 100
+vcftools --vcf hwe.recode.vcf --max-missing 1 --recode --recode-INFO-all --out max100
+
+
+
+#--hwe 0.0001 <<< thi so luong SNPs cang nhieu va het >>> 0.000001 0.00001 0.0001 0.001 0.01
+#chon chi so sao cho cang nhieu gia tri am cang tot
+
+#hwe
+vcftools --vcf pair.vcf --hwe 0.025 --recode --recode-INFO-all --out hwe2
+503
+vcftools --vcf hwe2.recode.vcf --het
+nano out.het
+
+#--hwe 0.0001 <<< thi so luong SNPs cang nhieu va het >>> 0.000001 0.00001 0.0001 0.001 0.01
+#chon chi so sao cho cang nhieu gia tri am cang tot
+
+
+
+
+
+#vcftools --vcf hwe2.rmsite.recode.vcf --het
+#nano out.het
+
+#Tien hanh test related sau do remove cac ca the nay di
+nano related.list
+INDV
+LA_PS01
+LA_PS03
+LA_PS06
+LA_PS14
+LA_PS15
+LA_PS16
+LA_PS17
+
+vcftools --vcf hwe.rmsite.recode.vcf --remove related.list --recode --recode-INFO-all --out rmind.related
+After filtering, kept 127 out of 134 Individuals
+After filtering, kept 541 out of a possible 541 Sites
+
+grep CHROM NeutralLoci.recode.vcf | cut -f10- | tr '\t' '\n' > popRMI
+awk '{print substr($0,4,2)}' popRMI > popidRMI
+paste popRMI popidRMI > popmap.5.5.related
+
+#THUC HIEN TIM NEUTRAL LOCI
+#Xac dinh outlier loci - remove cac outliernay di == Neutral loci
+nano outlier.list
+124
+226
+273
+329
+480
+534
+
+awk '!/#/' rmind.related.recode.vcf > noheader.vcf
+awk '/#/' rmind.related.recode.vcf > outlierloci.vcf
+
+#tr ' ' '\n' < loci.list > list # Neu cac loci hien nay dang nam tren 1 hang. Vi du: SNP_1, SNP_5....
+#mv list 29loci.list
+
+t=$(cat outlier.list)
+cat -e outlier.list
+#Neu thay o cuoi cung la cac ky tu $ la chinh xac. Con neu no la LF,CF thi can phai su dung dos2unix de convert
+for i in $t; do head -$i noheader.vcf | tail -1 >> outlierloci.vcf; done
+grep -v '#' outlierloci.vcf | wc -l
+6
+
+awk '!/#/' outlierloci.vcf | cut -f1,2 > outlier.loci
+vcftools --vcf rmind.related.recode.vcf --exclude-positions outlier.loci --recode --recode-INFO-all --out NeutralLoci
+After filtering, kept 127 out of 127 Individuals
+After filtering, kept 535 out of a possible 541 Sites
+
+#pop cua Neutral
+grep CHROM NeutralLoci.recode.vcf | cut -f10- | tr '\t' '\n' > popRMI
+awk '{print substr($0,4,2)}' popRMI > popidRMI
+paste popRMI popidRMI > popmap.5.5.related
+
+#Filter for migration bat dau tu cho nay
+
+#Can bang so luong ca the cho tung quan the. Tim quan the co so luong ca the thap nhat(PS=17).
+#Loai bo cac ca the trong cac quan the khac sao cho so luong bang nhau (=17)
+nano migraterm.indv
+INDV
+CA_SR02 
+CA_SR14 
+CA_SR27 
+CA_SR01 
+CA_SR12 
+CA_SR05 
+CA_SR19 
+CA_SR04 
+CA_SR13 
+CA_SR22 
+CA_SR30 
+CA_SR07 
+CA_ST02 
+CA_ST13 
+CA_ST14 
+CA_ST17 
+CA_ST01 
+CA_ST12 
+CA_ST05 
+CA_ST04 
+CA_ST07 
+CA_ST16 
+CA_ST22 
+CA_ST09 
+CA_ST06 
+CA_ST11 
+CA_ST19 
+CA_ST39 
+CA_ST21 
+LA_AT22 
+LA_AT21 
+VN_DL10 
+VN_DL05 
+VN_DL26 
+VN_DL22 
+VN_DL25 
+VN_DL27 
+VN_DL29 
+VN_DL28 
+VN_DL23 
+VN_DL19 
+VN_DL02 
+
+vcftools --vcf NeutralLoci.recode.vcf --remove migraterm.indv --recode --recode-INFO-all --out rmind.4migrate
+After filtering, kept 85 out of 127 Individuals
+After filtering, kept 535 out of a possible 535 Sites
+
+
+vcftools --vcf rmind.4migrate.recode.vcf --max-missing 1 --recode --recode-INFO-all --out max100
+After filtering, kept 85 out of 85 Individuals
+After filtering, kept 348 out of a possible 535 Sites
+
+ln ../../scripts/Filter_one_random_snp_per_contig.sh
+./Filter_one_random_snp_per_contig.sh max100.recode.vcf
+awk '!/#/' best.max100.vcf | wc -l
+205
+
+t=$(pwd)
+cd ../mapping
+#CutoffCode="6.5"
+cp ../../scripts/rad_haplotyper115HPC.pl ./
+perl rad_haplotyper115HPC.pl -v $t/best.max100.vcf  -x 32 -mp 1 -u 10 -ml 4 -n -e -p $t/popmap.5.5.related -r reference.5.5.fasta -a $t/migrate.ima
+Filtered 0 loci below missing data cutoff
+Filtered 0 possible paralogs
+Filtered 0 loci with low coverage or genotyping errors
+Filtered 0 loci with an excess of haplotypes
+Writing IMa file: /work/vietnam/dthinh/2018_3S_O_TB/filter.5.5_Final/migrate.ima
+
+
