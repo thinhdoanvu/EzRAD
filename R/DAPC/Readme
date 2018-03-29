@@ -1,6 +1,7 @@
 #Step 1. Copy all lines with install word beginning
 install.packages("devtools")
-install_github("thibautjombart/adegenet")
+#install_github("thibautjombart/adegenet")
+install.packages("adegenet")
 install.packages("DBI")
 install.packages("assertthat")
 install.packages("tibble")
