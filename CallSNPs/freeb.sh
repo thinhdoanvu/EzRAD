@@ -291,6 +291,8 @@ if [ ! -f "mapped.$CUTOFF.$CUTOFF2.bed" ]; then
 	mv raw.98.$CUTOFF.$CUTOFF2.vcf raw.098.$CUTOFF.$CUTOFF2.vcf
 	mv raw.99.$CUTOFF.$CUTOFF2.vcf raw.099.$CUTOFF.$CUTOFF2.vcf
 	
+	module load vcflib/1.0
+	module load vcftools/0.1.15
 	
 	vcfcombine raw.*.$CUTOFF.$CUTOFF2.vcf | sed -e 's/	\.\:/	\.\/\.\:/g' > TotalRawSNPs.$CUTOFF.$CUTOFF2.vcf
 
@@ -299,8 +301,6 @@ if [ ! -f "mapped.$CUTOFF.$CUTOFF2.bed" ]; then
 	fi
 
 	mv raw.*.$CUTOFF.$CUTOFF2.vcf ./raw.$CUTOFF.$CUTOFF2.vcf
-	
-	module load vcftools/0.1.15
 
 	echo "";echo `date` " Using VCFtools to parse SNPS.vcf for SNPs that are called in at least 90% of individuals"
 	vcftools --vcf TotalRawSNPs.$CUTOFF.$CUTOFF2.vcf --max-missing 0.9 --out Final90 --recode --non-ref-af 0.001 --max-non-ref-af 0.9999 --mac 1 --minQ 30 --recode-INFO-all &>VCFtools.$CUTOFF.$CUTOFF2.log
