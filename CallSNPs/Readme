@@ -1,1 +1,179 @@
-#Download file CallSNPs.zip and Unzip this file. This file contain password, please contact to me to get decompress password
+#Do ten file theo cu phap sau:
+# TB-OL27_CTGAAGCT-AGGCGAAG_L002_R1_001.fastq.gz - LA_OL27.F.fq.gz
+# TB-OL27_CTGAAGCT-AGGCGAAG_L002_R2_001.fastq.gz - LA_OL27.R.fq.gz
+ls TB-OL* | sed 's/TB-/LA_/g' | sed 's/_/\t/g' | cut -f1,2,5,6 | sed 's/LA\t/LA_/g' | sed 's/R1/F/g;s/R2/R/g' | sed 's/001.fastq.gz/fq.gz/g' | sed 's/\t/./g' | sed 's/OL/CH/g' > rname.ls 
+ls TB-OL* > source.ls
+awk '{print "mv "$0" "}' source.ls >t
+mv t source.ls
+paste source.ls rname.ls > rename.sh
+cat rename.sh
+chmod 755 rename.sh
+./rename.sh
+
+
+#STEP 1. 
+module load fastqc/20151106
+ls *gz | parallel 'fastqc {}'
+mkdir fastqc
+mv *html fastqc
+mv *zip fastqc
+#fastqc.sh
+
+#STEP 2
+module load parallel/20171022
+echo -e "Step 1. Dem so luong cac doan reads truoc khi thu csu call SNPs"
+ls *.gz | parallel "echo -n {}' ' && zgrep -c '^\+$' {}" | sort -g >> ../RawReads.txt
+
+#STEP 3.
+#Mo file RawReads.txt bang Excel, va sort theo reads tang dan. Doi ten file cac trinh tu co doan reads < 100.000.000 vao thu muc removed
+#Tuy thuoc vao du lieu, neu 100.000.000 ma con qua it ca the thi co the dieu chinh xuong 200.000 chang han
+
+#AG06.F.fq.gz	37
+#AG06.R.fq.gz	37
+#ST13.F.fq.gz	3337
+#ST13.R.fq.gz	3337
+#ST05.F.fq.gz	6812
+#ST05.R.fq.gz	6812
+#Pk36.F.fq.gz	226745
+#Pk36.R.fq.gz	226745
+#Pk02.F.fq.gz	286879
+
+
+#STEP3. trimFiles_ezRAD_tamucc.sh, ket qua co 2 thu  muc: assembly chua cac file dung de make reference va mapping dung de call SNPs
+#trimFiles_ezRAD_biolab.sh
+trimFiles_ezRAD_tamucc.sh
+#PHUONG AN TOI UU, CU DE TAT CA CAC INDIVIDUALS MA TRIMMING. SAU DO CHON RA SO LUONG CA THE = NHAU CHO MOI QUAN THE DE TAO REFERENCE GENOME.
+#VI CO THE CO NHUNG CA THE SO LUONG DOAN READS NHIEU NHUNG CHUA CHAC TAT CA DEU KHONG CHUA ADAPTER VA BAD QUALITY.
+
+#STEP 4. Assembly
+#Count Reads after Trimming for Assembly
+ls *r*.gz | parallel "echo -n {}' ' && zgrep -c '^\+$' {}" | sort -g >> ../TrimReads4Assm.txt
+
+#Tinh ty le % giua Trimming va Rawreads. Chi chon ra nhung ty le >80% va so luong ca the = nhau tren moi quan the de lam Reference genome  = EXCEL
+#Tao ra danh sach cac file can remove bao gom:
+#1. %remove > 20%
+#2. Numreads < 100K
+#3. Hop ca 2 danh sach nay se duoc file can phai assembly
+nano Remove4Ass.lst
+
+mkdir removed
+t=$(cat Remove4Ass.lst)
+for i in $t; do mv $i removed/; done
+
+cp ../../scripts/dDocent224tref_hpc3.bash ./
+#tao ra 2 file config.x.x.assm
+#assmFiles.x.x.sh
+sbatch assmFiles.x.x.sh
+
+#Neu KQ ma nhu the nay thi phai lam lai STEP 4 thong qua doan chuogn trinh sau
+gnuplot << \EOF 
+set terminal dumb size 120, 30
+set autoscale
+set xrange [1:20] 
+unset label
+set title "Number of Unique Sequences with More than X Coverage (Counted within individuals)"
+set xlabel "Coverage"
+set ylabel "Number of Unique Sequences"
+plot 'uniqseq.data' with lines notitle
+pause -1
+EOF
+
+                     Number of Unique Sequences with More than X Coverage (Counted within individuals)
+
+    1 +-+---+----------+-----------+-----------+----------+-----------+----------+-----------+----------+---------+-+
+      |     +          +           +           +          +           +          +           +          +           +
+      |                                                                                                             |
+      |                                                                                                             |
+      |                                                                                                             |
+      |                                                                                                             |
+  0.5 +-+                                                                                                         +-+
+      |                                                                                                             |
+      |                                                                                                             |
+      |                                                                                                             |
+      |                                                                                                             |
+    0 +-+   *********************************************************************************************************
+      |                                                                                                             |
+      |                                                                                                             |
+      |                                                                                                             |
+      |                                                                                                             |
+      |                                                                                                             |
+ -0.5 +-+                                                                                                         +-+
+      |                                                                                                             |
+      |                                                                                                             |
+      |                                                                                                             |
+      |                                                                                                             |
+      |     +          +           +           +          +           +          +           +          +           +
+   -1 +-+---+----------+-----------+-----------+----------+-----------+----------+-----------+----------+---------+-+
+            2          4           6           8          10          12         14          16         18          20
+                                                         Coverage
+
+#Neu ra duong thang nhu the nay, thi tat ca cac cong doan tiep theo se bi STOP.
+#Do vay can thuc hien count Read lai lan nua sau do loai bo cac ca the co doan doc thap va ty le remove cao de 
+#co the co duoc do thi giong nhu buoc 4
+
+# Dem so luong cac doan doc va %AT,GC cua cac Reference
+ls reference*.fasta | parallel "echo -n {}' ' && ./../../scripts/eautils/clipper/fastq-stats {} "  >> ../RefReads.txt
+
+#STEP 6. Mapping
+#Sau khi assembly se duoc file reference genome
+#Count READS, GC, Blocks va sau do chon ra:
+#TH1. Highest reads
+#TH2. Highest GC <=50%
+#TH3. Lowest blocks
+#TH4. Average(Reads,GC<50%,Blocks)
+
+#STEP 7. make Total SNPS
+#Neu bao loi vcfcombine: error while loading shared libraries: libhts.so.1: cannot open shared object file: No such file or directory
+#Ma chac chan se say ra thi
+CUTOFF=5
+CUTOFF2=11
+
+cd raw.$CUTOFF.$CUTOFF2.vcf
+module load vcflib/1.0
+module load vcftools/0.1.15
+vcfcombine raw.*.$CUTOFF.$CUTOFF2.vcf | sed -e 's/	\.\:/	\.\/\.\:/g' > ../TotalRawSNPs.$CUTOFF.$CUTOFF2.vcf
+vcftools --vcf TotalRawSNPs.$CUTOFF.$CUTOFF2.vcf --max-missing 0.9 --out Final90 --recode --non-ref-af 0.001 --max-non-ref-af 0.9999 --mac 1 --minQ 30 --recode-INFO-all &>VCFtools.$CUTOFF.$CUTOFF2.log
+vcftools --vcf TotalRawSNPs.$CUTOFF.$CUTOFF2.vcf --max-missing 1 --out Final100 --recode --non-ref-af 0.001 --max-non-ref-af 0.9999 --mac 1 --minQ 30 --recode-INFO-all &>>VCFtools.$CUTOFF.$CUTOFF2.log
+
+
+Dieu chinh dDocent224tref_hpc3.bash gia tri --geno => --max-missing la vi vcftools_0.11 khong con tham so geno.
+sbatch mapFiles.x.x.sh
+
+###############################################
+#################@ QUAN TRONG LAM NE!@#########
+###############################################
+
+#Thuong thi do su dung dDocent2.224tref_hpc3.bash se tao ra file vcf (SNP tho ngay va luon trong phan Mapping)
+#Tuy nhien voi nhung du lieu lon (>300 ca the) thi se khong the du thoi gian de thuc hien mapping va call SNP trong 1
+#Do vay anh THINH khuyen cac ban, chi lam den buoc Mapping va chon SNP = no
+#Tuc la khong call SNPs nua ma se su dung script: freeb.sh de thuc hien call SNP. Ly do:
+#1. So luong ca the lon + thoi gian 3 ngay + 59 phut la khong du de thuc hien cho call SNP
+#2. Neu tien hanh chia nho file mapped ra thanh 100/200/hoac 1000 file thi se bi bao loi sau cong doan nay
+parallel: Error: Parsing of --jobs/-j/--max-procs/-P failed.
+Usage:
+
+parallel [options] [command [arguments]] < list_of_arguments
+parallel [options] [command [arguments]] (::: arguments|:::: argfile(s))...
+cat ... | parallel --pipe [options] [command [arguments]]
+
+-j n            Run n jobs in parallel
+-k              Keep same order
+-X              Multiple arguments with context replace
+--colsep regexp Split input on regexp for positional replacements
+{} {.} {/} {/.} {#} {%} {= perl code =} Replacement strings
+{3} {3.} {3/} {3/.} {=3 perl code =}    Positional replacement strings
+With --plus:    {} = {+/}/{/} = {.}.{+.} = {+/}/{/.}.{+.} = {..}.{+..} =
+                {+/}/{/..}.{+..} = {...}.{+...} = {+/}/{/...}.{+...}
+
+-S sshlogin     Example: foo@server.example.com
+--slf ..        Use ~/.parallel/sshloginfile as the list of sshlogins
+--trc {}.bar    Shorthand for --transfer --return {}.bar --cleanup
+--onall         Run the given command with argument on all sshlogins
+--nonall        Run the given command with no arguments on all sshlogins
+
+--pipe          Split stdin (standard input) to multiple jobs.
+--recend str    Record end separator for --pipe.
+--recstart str  Record start separator for --pipe.
+
+See 'man parallel' for details
+
