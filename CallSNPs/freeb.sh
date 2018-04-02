@@ -98,9 +98,7 @@ if [ ! -f "mapped.$CUTOFF.$CUTOFF2.bed" ]; then
 	vcftools --vcf TotalRawSNPs.$CUTOFF.$CUTOFF2.vcf --max-missing 0.9 --out Final90 --recode --non-ref-af 0.001 --max-non-ref-af 0.9999 --mac 1 --minQ 30 --recode-INFO-all &>VCFtools.$CUTOFF.$CUTOFF2.log
 	vcftools --vcf TotalRawSNPs.$CUTOFF.$CUTOFF2.vcf --max-missing 1 --out Final100 --recode --non-ref-af 0.001 --max-non-ref-af 0.9999 --mac 1 --minQ 30 --recode-INFO-all &>>VCFtools.$CUTOFF.$CUTOFF2.log
 	
-	echo "";echo `date` " Renaming vcf output"
-	mv Final.recode.vcf Final.recode.$CUTOFF.$CUTOFF2.vcf
-	mv Final.frq.count Final.frq.$CUTOFF.$CUTOFF2.count
+	echo "";echo `date` " I have finished process for you!"
 
 ##NGUOC LAI NE
 	else
@@ -177,10 +175,7 @@ if [ ! -f "mapped.$CUTOFF.$CUTOFF2.bed" ]; then
 	vcftools --vcf TotalRawSNPs.$CUTOFF.$CUTOFF2.vcf --max-missing 0.9 --out Final90 --recode --non-ref-af 0.001 --max-non-ref-af 0.9999 --mac 1 --minQ 30 --recode-INFO-all &>VCFtools.$CUTOFF.$CUTOFF2.log
 	vcftools --vcf TotalRawSNPs.$CUTOFF.$CUTOFF2.vcf --max-missing 1 --out Final100 --recode --non-ref-af 0.001 --max-non-ref-af 0.9999 --mac 1 --minQ 30 --recode-INFO-all &>>VCFtools.$CUTOFF.$CUTOFF2.log
 	
-	echo "";echo `date` " Renaming vcf output"
-	mv Final.recode.vcf Final.recode.$CUTOFF.$CUTOFF2.vcf
-	mv Final.frq.count Final.frq.$CUTOFF.$CUTOFF2.count
-
+	echo "";echo `date` " I have finished process for you!"
 fi
 
 #Ket thuc phan tao SNP tho nha!
