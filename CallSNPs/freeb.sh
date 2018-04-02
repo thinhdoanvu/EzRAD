@@ -64,7 +64,7 @@ if [ ! -f "mapped.$CUTOFF.$CUTOFF2.bed" ]; then
 	echo "Call SNPs with 10 cpu threads"	
 	
 	
-	ls mapped.*.bed | sed 's/mapped.//g' | sed 's/.bed//g' | shuf | parallel -j 10 --no-notice --delay 1 freebayes -L bamlist.$CUTOFF.$CUTOFF2.list -t mapped.{}.bed -v raw.{}.vcf -f reference.$CUTOFF.$CUTOFF2.fasta -m 5 -q 5 -E 3 --min-repeat-entropy 1 -V --populations popmap.$CUTOFF.$CUTOFF2 -n 10
+	ls mapped.*.$CUTOFF.$CUTOFF2.bed | sed 's/mapped.//g' | sed 's/.bed//g' | shuf | parallel -j 10 --no-notice --delay 1 freebayes -L bamlist.$CUTOFF.$CUTOFF2.list -t mapped.{}.bed -v raw.{}.vcf -f reference.$CUTOFF.$CUTOFF2.fasta -m 5 -q 5 -E 3 --min-repeat-entropy 1 -V --populations popmap.$CUTOFF.$CUTOFF2 -n 10
 	
 	echo "Processing vcf file and make Raw SNPs"	
 	#rm mapped.*.$CUTOFF.$CUTOFF2.bed 
@@ -143,7 +143,7 @@ if [ ! -f "mapped.$CUTOFF.$CUTOFF2.bed" ]; then
 	echo "Call SNPs with 10 cpu threads"	
 	
 	
-	ls mapped.*.bed | sed 's/mapped.//g' | sed 's/.bed//g' | shuf | parallel -j 10 --no-notice --delay 1 freebayes -L bamlist.$CUTOFF.$CUTOFF2.list -t mapped.{}.bed -v raw.{}.vcf -f reference.$CUTOFF.$CUTOFF2.fasta -m 5 -q 5 -E 3 --min-repeat-entropy 1 -V --populations popmap.$CUTOFF.$CUTOFF2 -n 10
+	ls mapped.*.$CUTOFF.$CUTOFF2.bed | sed 's/mapped.//g' | sed 's/.bed//g' | shuf | parallel -j 10 --no-notice --delay 1 freebayes -L bamlist.$CUTOFF.$CUTOFF2.list -t mapped.{}.bed -v raw.{}.vcf -f reference.$CUTOFF.$CUTOFF2.fasta -m 5 -q 5 -E 3 --min-repeat-entropy 1 -V --populations popmap.$CUTOFF.$CUTOFF2 -n 10
 	
 	echo "Processing vcf file and make Raw SNPs"	
 	#rm mapped.*.$CUTOFF.$CUTOFF2.bed 
