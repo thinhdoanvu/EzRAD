@@ -10,6 +10,15 @@ cat rename.sh
 chmod 755 rename.sh
 ./rename.sh
 
+#Kiem tra %GC cua cac trinh tu dau vao
+
+ls *.gz >name.list
+t=$(cat name.list) 
+for i in $t
+do
+./fastq-stats $i | tail -6 | head -4 | cut -f2 | sed -n '2,3p' | awk '{sum+=$0} END {print sum}' >>RawGC.list
+done
+paste name.list RawGC.list >>GC.namelist
 
 #STEP 1. 
 module load fastqc/20151106
