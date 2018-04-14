@@ -1,232 +1,368 @@
-#!/bin/bash
-checkfinish()
-{
-  echo "Do you want to finish job? (y/n)"
-  read ansfin
-  if [ "$ansfin" == "n" ]
-  then
-    ls
-    begin
-  else
-      ls
-	if [ -f 1 ]
-	then
-	  rm 1
-	fi
-	if [ -f 2 ]
-	then
-	  rm 2
-	fi
-    if [ -f 3 ]
-	then
-	  rm 3
-	fi
-    if [ -f 4 ]
-	then
-	  rm 4
-	fi
-	if [ -f sourcename ]
-	then
-	  rm sourcename
-	fi
-	if [ -f rename ]
-	then
-	  rm rename
-	fi
-	if [ -f dthinh.rename.sh ]
-	then
-	  rm dthinh.rename.sh
-	fi
-  fi
-}
+#########################################################
+READ CAREFULLY THIS INSTRUCTIONS FIRST AND THEN
+DOWNLOAD file Rename4EzRAD.sh for automatically reanme
+##########################################################
+(c) dthinh 14 April 2018
+Thanks for look at me
+##########################################################
+Basic Linux Command for EzRAD
+##########################################################
+Assume that you have some files like this in your folder that you want to process by dDocent. 
+T_VN_CX68_S69_L006_R1_001.fastq.gz
+T_VN_CX68_S69_L006_R2_001.fastq.gz
+T_VN_CX69_S80_L006_R1_001.fastq.gz
+T_VN_CX69_S80_L006_R2_001.fastq.gz
+T_VN_CX6_S63_L006_R1_001.fastq.gz
+T_VN_CX6_S63_L006_R2_001.fastq.gz
 
-checkanswers()
-{
-echo "Do you want to start?(y/n)"
-read bgin
-if [ "$bgin" == "n" ]
-then
-  clear
-  ls
-else
-  date
-  echo "contact thinhdv@ntu.edu.vn"
-	#Doing excercise now
-  begin
-fi
-}
+T_VN_MS7_S42_L006_R1_001.fastq.gz
+T_VN_MS7_S42_L006_R2_001.fastq.gz
+T_VN_MS1_S38_L006_R1_001.fastq.gz
+T_VN_MS1_S38_L006_R2_001.fastq.gz
+T_VN_MS26_S21_L006_R1_001.fastq.gz
+T_VN_MS26_S21_L006_R2_001.fastq.gz
 
-checkremains()
-{
-ls *R1_001.fastq.gz 2>err2
-errnum=$(grep -c "cannot access" err2)
-if [ $errnum -gt 0 ]
-then
-  echo "You don't have any files to rename"
-  rm err2
-  if [ -f 1 ]
-	then
-	  rm 1
-	fi
-	if [ -f 2 ]
-	then
-	  rm 2
-	fi
-    if [ -f 3 ]
-	then
-	  rm 3
-	fi
-    if [ -f 4 ]
-	then
-	  rm 4
-	fi
-	if [ -f sourcename ]
-	then
-	  rm sourcename
-	fi
-	if [ -f rename ]
-	then
-	  rm rename
-	fi
-	if [ -f dthinh.rename.sh ]
-	then
-	  rm dthinh.rename.sh
-	fi
-	if [ -f err ]
-	then
-	  rm err
-	fi
-  exit
-else
-  echo "Do you want to repeat again? (y/n)"
-  read ans1
-  if [ "$ans1" == "n" ]
-  then
-    exit
-  else
-    ls
-    begin
-  fi
-fi
-}
+These are your goals:
+VN_CX01.F.fq.gz
+VN_CX01.R.fq.gz
+VN_CX02.F.fq.gz
+VN_CX02.R.fq.gz
+VN_CX03.F.fq.gz
+VN_CX03.R.fq.gz
 
+VN_MS01.F.fq.gz
+VN_MS01.R.fq.gz
+VN_MS02.F.fq.gz
+VN_MS02.R.fq.gz
+VN_MS03.F.fq.gz
+VN_MS03.R.fq.gz
 
-#Code 4 begin here
+You can see that, I renamed T_VN_CX68_S69_L006_R1_001.fastq.gz, T_VN_CX68_S69_L006_R2_001.fastq.gz by VN_CX01.F.fq.gz, and VN_CX01.R.fq.gz, respectively. You can guest that what did I do for all samples.
 
-begin()
-{
-echo "These are list of suffix name need to be changed:"
-ls *gz | sed 's/_R1_001.fastq.gz//g;s/_R2_001.fastq.gz//g' | cut -f1-3 -d"_" | sed 's/\t/_/g'
-echo "please insert your suffix individual file name, ie: T_VN_VL means for Trichopodus_Vietnam_VinhLong"
-read sname
+This is tutorial to do that:
+############################
+@ SEQ COMMAND
+Print numbers from FIRST to LAST, in steps of INCREMENT.
+############################
+In my case, I saw that I had 3 individuals per site, and I had 6 file totally for 1 sample location (2 locations in my case)
+I will create 3 line with odering number from 1 to 3
+Here is command:
+seq 1 3
+Result is
+1
+2
+3
 
-#Checking file name exist yet?
-ls $sname* 2>err
-errnum=$(grep -c "cannot access" err)
-if [ $errnum -gt 0 ]
-then
-  echo "Please checking your suffix name..."
-  cat err
-  rm err
-  exit
-else
+##############################
+@ awk
+awk '{print }' filename
+##############################
+I want to double lines in "seq 1 3" command before. I will do this
+seq 1 3 | awk '{print $0"\n"$0}'
+Here is result
+1
+1
+2
+2
+3
+3
+???Explaination
+seq 1 3 | 
+I want to use the result of seq command for input awk command (this sign: |)
+| : continuous command
+awk '{print $0}' : $0 means for all column of input file. Because you only have 1 column in input file for awk, so you can use $1. Like this awk '{print $1}'
+awk '{print $0"\n"}': "\n" means newline (Enter chracter)
+awk '{print $0"\n"$0}': means for printing 1st line, then newline, then copy 1st line again. And so on...
+I NEED TO SAVE THIS STEP TO A FILE
+Here is fully command: seq 1 3 | awk '{print $0"\n"$0}' > stt
+>: means for save output
 
-#Check 2 files F and R
-tF=$(ls $sname*R1*.fastq.gz | wc -l)
-tR=$(ls $sname*R2*.fastq.gz | wc -l)
-t=$tF
+####################################
+@ nano 
+####################################
+Because we have many files, 1 to 32 forexample. We need to replace 1 by 01 and 9 to 09... in order to equal with length of file names
+Here is command: nano stt
+Your window like this
+1
+1
+2
+2
+3
+3
+Edit line by hand with 0 character at the begining of line
+This is your result:
+01
+01
+02
+02
+03
+03
+Press Ctl + X, and then Press Y for save with the same name, and close nano window
 
-#Checking number of F file and R file
-if [ $tF -eq $tR ]
-then
-  echo "You have "$t" individuals inside"
-else
-  echo "Please check your sequnce data, because the"$tF "Forward file is not equal with "$tR" Reverse file"
-  exit
-fi
+#########################
+@ ls 
+list file or folde name with basic or detail information
+#########################
+I want to display indivials in VN_CX location. So I use
+ls VN_CX*
+* stand for anything on the right of the file name
 
-#"$t" convert text to number
+#########################
+@ mv
+rename file or folder
+mv oldname newname
+#########################
+I want to change T_VN_CX68_S69_L006_R1_001.fastq.gz to VN_CX01.F.fq.gz. I will use mv command. Here is command
+mv T_VN_CX68_S69_L006_R1_001.fastq.gz VN_CX01.F.fq.gz
+Furthermore, I want to change all my files
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#Step 1. list all files you want to change by names
+ls T_VN_CX*
 
-if [ "$t" -gt 0 ]
-then
-echo "You have "$t "sample files need to rename"
-else
-  echo "You don't have any files"
-fi
+Here are your results
+T_VN_CX68_S69_L006_R1_001.fastq.gz
+T_VN_CX68_S69_L006_R2_001.fastq.gz
+T_VN_CX69_S80_L006_R1_001.fastq.gz
+T_VN_CX69_S80_L006_R2_001.fastq.gz
+T_VN_CX6_S63_L006_R1_001.fastq.gz
+T_VN_CX6_S63_L006_R2_001.fastq.gz
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#Step 2. Add mv at the beginning of every lines
+ls T_VN_CX* | awk '{print "mv "$0}'
 
-#List of name file
-ls $sname* | nl
-
-#Making ordered numbering name files
-if [ "$t" -lt 10 ]
-then
-  seq 1 $t | awk '{print "0"$0}' | awk '{print $0"\n"$0}' > 2
-else
-  seq 1 9 | awk '{print "0"$0}' >1
-  seq 10 $t >>1
-  awk '{print $0"\n"$0}' 1 >2
-fi
-
-#Making source name file
-ls $sname* | awk '{print "mv "$0}' >sourcename
-echo "your list file names here:"
-echo "-----------------------------------------------------------"
+Here are your results
+mv T_VN_CX68_S69_L006_R1_001.fastq.gz
+mv T_VN_CX68_S69_L006_R2_001.fastq.gz
+mv T_VN_CX69_S80_L006_R1_001.fastq.gz
+mv T_VN_CX69_S80_L006_R2_001.fastq.gz
+mv T_VN_CX6_S63_L006_R1_001.fastq.gz
+mv T_VN_CX6_S63_L006_R2_001.fastq.gz
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#Step 3. Save that in sourename file. Using > sign
+ls T_VN_CX* | awk '{print "mv "$0}' > sourename
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#Step 4. Display content of file. Using cat 
 cat sourcename
-echo "-----------------------------------------------------------"
 
-#Making new name file
-echo "type your destination name file [Country_Location], ie: VN_VL"
-read rname
+Here is your screen
+mv T_VN_CX68_S69_L006_R1_001.fastq.gz
+mv T_VN_CX68_S69_L006_R2_001.fastq.gz
+mv T_VN_CX69_S80_L006_R1_001.fastq.gz
+mv T_VN_CX69_S80_L006_R2_001.fastq.gz
+mv T_VN_CX6_S63_L006_R1_001.fastq.gz
+mv T_VN_CX6_S63_L006_R2_001.fastq.gz
 
-#Open 2 file
-opf=$(cat 2)
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#Step 5. Relace R1_001.fastq.gz by F.fq.gz
 
-#Check file 3
-if [ -f 3 ]
-then
-  rm 3
-else
-for i in $opf
-do
-  echo $rname$i >>3
-done
+Call ls T_VN_CX* again, and replace R1_001.fastq.gz by F.fq.gz
 
-fi
+Here is your command:
+ls T_VN_CX* | sed 's/R1_001.fastq.gz/F.fq.gz/g'
 
-ls $sname* | sed 's/R1_001.fastq/.F.fq/g;s/R2_001.fastq/.R.fq/g' | sed 's/_/\t/g' | awk '{print $NF}'>4
-cat 4
+Here is your result
+T_VN_CX68_S69_L006_F.fq.gz
+T_VN_CX68_S69_L006_R2_001.fastq.gz
+T_VN_CX69_S80_L006_F.fq.gz
+T_VN_CX69_S80_L006_R2_001.fastq.gz
+T_VN_CX6_S63_L006_F.fq.gz
+T_VN_CX6_S63_L006_R2_001.fastq.gz
 
-paste 3 4 | sed 's/\t//g'>rename
+WHAT IS GOING ON?
+###################
+@ sed command
+search and replace
+###################
+sed 's/find_content/relplcae_with/g' file_name
+s: standfor search
+g: stand for global
 
-#List rename file
-echo "New name here:"
-echo "-------------------------------------------------"
-cat rname
-echo "-------------------------------------------------"
+Now, similary results if you want to replace R2_001.fastq.gz by R.fq.gz
 
-#Check again
-paste sourcename rename >dthinh.rename.sh
-cat dthinh.rename.sh
+Here is your command:
+ls T_VN_CX* | sed 's/R1_001.fastq.gz/F.fq.gz/g' | sed 's/R2_001.fastq.gz/R.fq.gz/g'
 
-#Check again, please
-clear
-echo "This is your command:"
-cat dthinh.rename.sh
-echo "Do you want to rename all of them? (y/n)"
-read ans1
+This is your goal:
+T_VN_CX68_S69_L006_F.fq.gz
+T_VN_CX68_S69_L006_R.fq.gz
+T_VN_CX69_S80_L006_F.fq.gz
+T_VN_CX69_S80_L006_R.fq.gz
+T_VN_CX6_S63_L006_F.fq.gz
+T_VN_CX6_S63_L006_R.fq.gz
 
-#checking answer1
-if [ "$ans1" == "y" ]
-then
-  bash dthinh.rename.sh
-else
-  exit
-fi
-#End of check name file exist
-fi
-}
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#Step 6. I want to filter F or R .fq.gz without the left hand side of name file. Like this
+F.fq.gz
+R.fq.gz
+F.fq.gz
+R.fq.gz
+F.fq.gz
+R.fq.gz
 
-#Code will be execute here
-checkanswers
-checkremains
-checkfinish
+Here is your command:
+ls T_VN_CX* | sed 's/R1_001.fastq.gz/F.fq.gz/g' | sed 's/R2_001.fastq.gz/R.fq.gz/g' | cut -f6 -d "_"
+
+WHAT???
+######################
+@ cut command
+#####################
+-f: field or column
+-f6: column 6th
+-d: decription by 
+-d "_" means: by _ character
+
+Forexample, T_VN_CX68_S69_L006_F.fq.gz when I repalce _ by \t it will become
+column_1: T
+column_2: VN
+column_3: CX68
+column_4: S69
+column_5: L006
+column_6: F.fq.gz
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#Step 7. Save your result from 6th step to rename temp1 file. Like this
+ls T_VN_CX* | sed 's/R1_001.fastq.gz/F.fq.gz/g' | sed 's/R2_001.fastq.gz/R.fq.gz/g' | cut -f6 -d "_" > temp1
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#Step 8. Display your temp1 by: cat temp1
+Here is your screen
+F.fq.gz
+R.fq.gz
+F.fq.gz
+R.fq.gz
+F.fq.gz
+R.fq.gz
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#Step 9. Concat VN_CX string to stt and temp1 file. Like so
+VN_CX01.F.fq.gz
+VN_CX01.R.fq.gz
+VN_CX02.F.fq.gz
+VN_CX02.R.fq.gz
+VN_CX03.F.fq.gz
+VN_CX03.R.fq.gz
+
+HOW CAN I DO THAT????
+
+1. I will concat stt with temp1 first. Using paste command
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+@ paste command
+like paste in Word or Excel programs, but it only for column not row
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+Here is your command:
+paste stt temp1
+
+Results is:
+01 F.fq.gz
+01 R.fq.gz
+02 F.fq.gz
+02 R.fq.gz
+03 F.fq.gz
+03 R.fq.gz
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+2. Adding VN_CX at the begining at each line. Using awk
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+Here is your command:
+paste stt temp1 | awk '{print "VN_CX"$0}'
+
+Results is:
+VN_CX01 F.fq.gz
+VN_CX01 R.fq.gz
+VN_CX02 F.fq.gz
+VN_CX02 R.fq.gz
+VN_CX03 F.fq.gz
+VN_CX03 R.fq.gz
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+3. Replace tab chracter by . character. Using sed
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+Here is your command:
+paste stt temp1 | awk '{print "VN_CX"$0}' | sed 's/\t/./g'
+
+Results is:
+VN_CX01.F.fq.gz
+VN_CX01.R.fq.gz
+VN_CX02.F.fq.gz
+VN_CX02.R.fq.gz
+VN_CX03.F.fq.gz
+VN_CX03.R.fq.gz
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+4. Save result in 3rd step above by > sign
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+Here is your command:
+paste stt temp1 | awk '{print "VN_CX"$0}' | sed 's/\t/./g' > rename
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+5. Display rename file by cat
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+cat rename
+
+Here is your result
+
+VN_CX01.F.fq.gz
+VN_CX01.R.fq.gz
+VN_CX02.F.fq.gz
+VN_CX02.R.fq.gz
+VN_CX03.F.fq.gz
+VN_CX03.R.fq.gz
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+6. Concat source name and rename in one file .sh. Using paste 
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+paste sourcename rename > myshell.sh
+
+Here is your result
+mv T_VN_CX68_S69_L006_R1_001.fastq.gz VN_CX01.F.fq.gz
+mv T_VN_CX68_S69_L006_R2_001.fastq.gz VN_CX01.R.fq.gz
+mv T_VN_CX69_S80_L006_R1_001.fastq.gz VN_CX02.F.fq.gz
+mv T_VN_CX69_S80_L006_R2_001.fastq.gz VN_CX02.R.fq.gz
+mv T_VN_CX6_S63_L006_R1_001.fastq.gz VN_CX03.F.fq.gz
+mv T_VN_CX6_S63_L006_R2_001.fastq.gz VN_CX03.R.fq.gz 
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+7. Permit to run myshell.sh. Using chmod 755
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+chmod 755 myshell.sh
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+8. RUN
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+./myshell.sh
+after that, please type ls and press Enter key. Like this
+ls
+
+****************************************************************************
+*************************HERE IS YOUR SCREEN*******************************
+T_VN_MS7_S42_L006_R1_001.fastq.gz
+T_VN_MS7_S42_L006_R2_001.fastq.gz
+T_VN_MS1_S38_L006_R1_001.fastq.gz
+T_VN_MS1_S38_L006_R2_001.fastq.gz
+T_VN_MS26_S21_L006_R1_001.fastq.gz
+T_VN_MS26_S21_L006_R2_001.fastq.gz
+VN_CX01.F.fq.gz
+VN_CX01.R.fq.gz
+VN_CX02.F.fq.gz
+VN_CX02.R.fq.gz
+VN_CX03.F.fq.gz
+VN_CX03.R.fq.gz
+****************************************************************************
+
+REPEAT ALL STEPS FOR T_VN_MS* THAT WE CAN HAVE
+
+VN_MS01.F.fq.gz
+VN_MS01.R.fq.gz
+VN_MS02.F.fq.gz
+VN_MS02.R.fq.gz
+VN_MS03.F.fq.gz
+VN_MS04.R.fq.gz
+VN_CX01.F.fq.gz
+VN_CX01.R.fq.gz
+VN_CX02.F.fq.gz
+VN_CX02.R.fq.gz
+VN_CX03.F.fq.gz
+VN_CX03.R.fq.gz
+
+*****************GOOD LUCK TO YOU***************
