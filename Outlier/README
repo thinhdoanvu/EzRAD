@@ -89,5 +89,14 @@ echo -e "
 \n"
 BayeScan2.1 -snp input.bsc -n 5000 -thin 10 -nbp 10 -pilot 5000 -burn 100000 -pr_odds 100
 
+#READ RESULTS
+> source("E:/BioInformatics/BayeScan2.1/BayeScan2.1/R functions/plot_R.r")
+> plot_bayescan("E:/2018_DataAnalysis/Ghe/14April2018/KH_PY1group/input_fst.txt",FDR=0.05)
+$outliers
+ [1]  39  58  90 116 128 129 137 175 222 226 230 255 256 257 301 302 303 326 338 340
+[21] 341 365 369 390
+
+$nb_outliers
+[1] 24
  
          
