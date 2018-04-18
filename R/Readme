@@ -25,7 +25,7 @@ This instruction for relatednees detection
           If you have problem with related require x32 R environment, Click Tools - Global Options - Change to 32 bits environment, restart R
 #Step 7. input <- read.table("the_path_you_saved_relatedness file",header = FALSE, sep = " ", stringsAsFactors = FALSE)
           Forexample: input <- read.table("/home/thinhdv/input.related",header = FALSE, sep = " ", stringsAsFactors = FALSE)
-#Step 8. output <- coancestry (input, trioml =2, wang =2, dyadml =2, ci95.num.bootstrap=50)
+#Step 8. output <- coancestry (input, allow.inbreeding=TRUE, ci95.num.bootstrap =100, dyadml=2)
           We want to check relatedness with 95% confident and 50 replicate. If you want more you can choose higher value
           95% confident (xxx=2)
           50 replicate (bootstrap=50)
