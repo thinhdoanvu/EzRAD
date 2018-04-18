@@ -65,3 +65,29 @@ Bayescan2.1
          second: plot_bayescan("the_path_of_fst.txt suffix file",FDR=0.05)
          If you have any OUTLIER LOCI, black line will be appear and you can see all of them on the right of this line
          
+ USE IT FOR SERVER LINUX
+ only me (author)
+ #!/bin/bash
+#SBATCH --job-name=BayeScan
+#SBATCH --time=96:00:00
+#SBATCH -p normal
+#SBATCH --nodes=1
+#SBATCH --mail-user=thinhdv@ntu.edu.vn
+#SBATCH --mail-type=begin  # email me when the job starts
+#SBATCH --mail-type=end    # email me when the job finish
+
+module load bio-misc/1.0
+echo -e "Thuc hien kiem dinh outlier loci bang phan mem Bayescan 2.1 voi cac thong so mac dinh:"
+echo -e " 
+-snp input snp data
+-threads n   Number of threads used, default is number of cpu available 
+-n 5000      Number of outputted iterations, default is 5000
+-thin 10     Thinning interval size, default is 10
+-nbp 20      Number of pilot runs, default is 20
+-pilot 5000  Length of pilot runs, default is 5000
+-burn 50000  Burn-in length, default is 50000
+\n"
+BayeScan2.1 -snp input.bsc -n 5000 -thin 10 -nbp 10 -pilot 5000 -burn 100000 -pr_odds 100
+
+ 
+         
