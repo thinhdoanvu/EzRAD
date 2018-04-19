@@ -1,0 +1,662 @@
+#module load dDocent/2.24
+module load vcftools/0.1.15
+module load vcflib/1.0
+module load parallel/20180122
+
+grep CHROM TotalRawSNPs.4.5.vcf | cut -f10- | tr '\t' '\n' > popRMI
+awk '{print substr($0,1,5)}' popRMI | uniq  > popidHET
+
+#vcftools --vcf TotalRawSNPs.4.5.vcf --geno 0.5 --mac 3 --minQ 30 --recode --recode-INFO-all --out BoesMC-g5mac3minQ30
+vcftools --vcf TotalRawSNPs.4.5.vcf --max-missing 0.5 --mac 3 --minQ 30 --recode --recode-INFO-all --out Ccphilus-g5mac3minQ30
+
+File contains 231144 entries and 301 individuals.
+Applying Required Filters.
+Filtering sites with Quality less than 30
+Filtering sites by allele frequency and call rate
+Filtering sites by allele count and missing data
+After filtering, kept 301 out of 301 Individuals
+After filtering, kept 415712 out of a possible 1041926 Sites
+
+#counting het
+vcftools --vcf Ccphilus-g5mac3minQ30.recode.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>g5mac3minQ30.het
+done
+paste popidHET g5mac3minQ30.het
+
+CA_KD   Average HET 0.432659
+CA_KT   Average HET 0.446766
+CA_SR   Average HET 0.51246
+LA_BA   Average HET 0.741088
+LA_CH   Average HET 0.470294
+TL_BD   Average HET 0.458731
+TL_LO   Average HET 0.390409
+TL_UB   Average HET 0.396555
+VN_AG   Average HET 0.476852
+VN_CT   Average HET 0.570234
+VN_DT   Average HET 0.428426
+
+
+#vcftools --vcf BoesMC-g5mac3minQ30.recode.vcf --minDP 3 --recode --recode-INFO-all --out Boes-g5mac3minQ30minDP3
+vcftools --vcf Ccphilus-g5mac3minQ30.recode.vcf --minDP 3 --recode --recode-INFO-all --out Ccphilus-g5mac3minQ30minDP3
+Filtering out Genotypes with Depth less than 3 and greater than 2.14748e+09
+After filtering, kept 301 out of 301 Individuals
+After filtering, kept 415712 out of a possible 415712 Sites
+
+
+#counting het
+vcftools --vcf Ccphilus-g5mac3minQ30minDP3.recode.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>g5mac3minQ30minDP3.het
+done
+paste popidHET g5mac3minQ30minDP3.het
+
+CA_KD   Average HET 0.304141
+CA_KT   Average HET 0.36789
+CA_SR   Average HET 0.258635
+LA_BA   Average HET 0.725232
+LA_CH   Average HET 0.242617
+TL_BD   Average HET 0.325532
+TL_LO   Average HET 0.314642
+TL_UB   Average HET 0.313394
+VN_AG   Average HET 0.372675
+VN_CT   Average HET 0.091838
+VN_DT   Average HET 0.325193
+
+
+#vcftools --vcf Boes-g5mac3minQ30minDP3.recode.vcf --missing
+vcftools --vcf Ccphilus-g5mac3minQ30minDP3.recode.vcf --missing-indv
+cat out.imiss
+
+grep '415712' out.imiss | cut -f5 > totalmissing
+gnuplot
+set terminal dumb size 120, 30
+set autoscale 
+unset label
+set title "Histogram of % missing data per individual"
+set ylabel "Number of Occurrences"
+set xlabel "% of missing data"
+#set yr [0:100000]
+binwidth=0.01
+bin(x,width)=width*floor(x/width) + binwidth/2.0
+plot 'totalmissing' using (bin($1,binwidth)):(1.0) smooth freq with boxes
+pause -1
+exit
+
+                                         Histogram of % missing data per individual
+  Number of Occurrences
+    20 ++--------+---------+---------+---------+---------+---------+---------+---------+---------+---------+--------++
+       +        **         +         +         +         +      'totalmissing' using (bin($1,binwidth)):(1.0) ****** +
+    18 ++       **                                                                                                  ++
+       |        **                                                                                                   |
+       |        **                                                                                                   |
+    16 ++       **                                                                                                  ++
+       |        **                                                                                                   |
+    14 ++       ***                                                                                                 ++
+       |        ***                                                                                                  |
+       |        ***                                                                                                  |
+    12 ++     *****                                                                                                 ++
+       |      ******                                                                                                 |
+    10 ++     ******                                                                                                ++
+       |      ********                                                                                               |
+     8 ++     ************                 **   **                                                                  ++
+       |      ************                 **   **                                                                   |
+       |     *************                 ** ****                                                                   |
+     6 ++    **************  **            *********                                                                ++
+       |     ******************           **********        **                                             **        |
+     4 ++    ****************** ****      ***********       **              ***                           ***       ++
+       |     ****************** **** **  **************     **         **   * *                           ***        |
+       |     ****************** **** **  **************     **         **   * *                           ***        |
+     2 ++  ****************************************************** ********  * *          ***    ***       ***       ++
+       +  ** ************************************************** ***+ * ******+************ ******+***********        +
+     0 ++-***************************************************************************************************-------++
+       0        0.1       0.2       0.3       0.4       0.5       0.6       0.7       0.8       0.9        1        1.1
+                                                      % of missing data
+
+awk '$5 > 0.5' out.imiss | cut -f1 > lowCover.indv
+nano lowCover.indv
+
+#vcftools --vcf Boes-g5mac3minQ30minDP3.recode.vcf --remove lowCover.indv --recode --recode-INFO-all --out Boes-g5mac3minQ30minDPlm
+vcftools --vcf Ccphilus-g5mac3minQ30minDP3.recode.vcf --remove lowCover.indv --recode --recode-INFO-all --out Ccphilus-g5mac3minQ30minDPlm
+File contains 415712 entries and 301 individuals.
+Applying Required Filters.
+Excluding individuals in 'exclude' list
+After filtering, kept 249 out of 301 Individuals
+After filtering, kept 415712 out of a possible 415712 Sites
+
+
+#counting het
+vcftools --vcf Ccphilus-g5mac3minQ30minDPlm.recode.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>g5mac3minQ30minDPlm.het
+done
+paste popidHET g5mac3minQ30minDPlm.het
+
+CA_KD   Average HET 0.29969
+CA_KT   Average HET 0.370412
+CA_SR   Average HET 0.252174
+LA_BA   Average HET 0.721198
+LA_CH   Average HET 0.303714
+TL_BD   Average HET 0.360825
+TL_LO   Average HET 0.308257
+TL_UB   Average HET 0.306897
+VN_AG   Average HET 0.347411
+VN_CT   Average HET 0.24856
+VN_DT   Average HET 0.318477
+
+
+#vcftools --vcf Boes-g5mac3minQ30minDPlm.recode.vcf --geno 0.95 --maf 0.01 --recode --recode-INFO-all --out Boes-g95maf01
+vcftools --vcf Ccphilus-g5mac3minQ30minDPlm.recode.vcf --max-missing 0.95 --maf 0.01 --recode --recode-INFO-all --out Ccphilus-g95maf01
+File contains 415712 entries and 249 individuals.
+Applying Required Filters.
+Filtering sites by allele frequency and call rate
+After filtering, kept 249 out of 249 Individuals
+After filtering, kept 61708 out of a possible 415712 Sites
+
+
+#counting het
+vcftools --vcf Ccphilus-g95maf01.recode.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>g95maf01.het
+done
+paste popidHET g95maf01.het
+
+CA_KD   Average HET 0.261655
+CA_KT   Average HET 0.288416
+CA_SR   Average HET 0.333878
+LA_BA   Average HET 0.47443
+LA_CH   Average HET 0.347994
+TL_BD   Average HET 0.281875
+TL_LO   Average HET 0.267778
+TL_UB   Average HET 0.256248
+VN_AG   Average HET 0.287647
+VN_CT   Average HET 0.338427
+VN_DT   Average HET 0.250727
+
+
+grep CHROM Ccphilus-g95maf01.recode.vcf | cut -f10- | tr '\t' '\n' > popRMI
+awk '{print substr($0,4,2)}' popRMI > popidRMI
+paste popRMI popidRMI > popmap.4.5
+uniq popidRMI > popid_uniqRMI
+t=$(cat popid_uniqRMI)
+for i in $t
+do
+  grep -w $i popmap.4.5 > $i.keep
+done
+
+ls *keep | sed 's/.keep//g' | parallel 'vcftools --vcf Ccphilus-g95maf01.recode.vcf --keep {}.keep --missing-site --out {}'
+
+AG=13
+CT=3
+DT=32
+KD=30
+KT=31
+SR=19
+BH=28
+CH=19
+LO=12
+BD=30
+UB=30
+
+if [ -f all.badlociRMI ]
+then
+  rm all.badlociRMI
+fi
+cat *.lmiss | awk '!/CHR/' >> all.badlociRMI
+
+cut -f6 all.badlociRMI > missing.lociRMI
+gnuplot << \EOF
+set terminal dumb size 120, 30
+set autoscale 
+unset label
+set title "Histogram of % missing data per loci"
+set ylabel "Number of Occurrences"
+set xlabel "% of missing data"
+#set yr [0:100000]
+binwidth=0.01
+bin(x,width)=width*floor(x/width) + binwidth/2.0
+plot 'missing.lociRMI' using (bin($1,binwidth)):(1.0) smooth freq with boxes
+pause -1
+EOF
+
+                                              Histogram of % missing data per loci
+  Number of Occurrences
+    600000 ++--------+--------+---------+---------+--------+---------+--------+---------+---------+--------+--------++
+           +         +        +         +         +        + 'missing.lociRMI' using (bin($1,binwidth)):(1.0) ****** +
+           |                                                                                                         |
+           ***                                                                                                       |
+    500000 *+*                                                                                                      ++
+           * *                                                                                                       |
+           * *                                                                                                       |
+           * *                                                                                                       |
+    400000 *+*                                                                                                      ++
+           * *                                                                                                       |
+           * *                                                                                                       |
+           * *                                                                                                       |
+    300000 *+*                                                                                                      ++
+           * *                                                                                                       |
+           * *                                                                                                       |
+           * *                                                                                                       |
+    200000 *+*                                                                                                      ++
+           * *                                                                                                       |
+           * *                                                                                                       |
+           * *                                                                                                       |
+    100000 *+*                                                                                                      ++
+           * *                                                                                                       |
+           * ***                                                                                                     |
+           * * ****  **       +         +         +        +         +        +         +         +        +         +
+         0 ***********************************************************************************************************
+           0        0.1      0.2       0.3       0.4      0.5       0.6      0.7       0.8       0.9       1        1.1
+                                                        % of missing data
+
+awk '$6 > 0.1' all.badlociRMI | cut -f1,2 > badloci
+#vcftools --vcf Boes-g95maf01.recode.vcf --exclude-positions badloci --recode --recode-INFO-all --out Boes-g95maf01p5
+vcftools --vcf Ccphilus-g95maf01.recode.vcf --exclude-positions badloci --recode --recode-INFO-all --out Ccphilus-g95maf01p5
+File contains 61708 entries and 249 individuals.
+Applying Required Filters.
+Filtering sites by include/exclude positions files
+After filtering, kept 249 out of 249 Individuals
+After filtering, kept 32832 out of a possible 61708 Sites
+
+#counting het
+vcftools --vcf Ccphilus-g95maf01p5.recode.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>Ccphilus-g95maf01p5.het
+done
+paste popidHET Ccphilus-g95maf01p5.het
+
+CA_KD   Average HET 0.137485
+CA_KT   Average HET 0.150488
+CA_SR   Average HET 0.227741
+LA_BA   Average HET 0.2896
+LA_CH   Average HET 0.230301
+TL_BD   Average HET 0.14289
+TL_LO   Average HET 0.140565
+TL_UB   Average HET 0.12263
+VN_AG   Average HET 0.159037
+VN_CT   Average HET 0.22969
+VN_DT   Average HET 0.118477
+
+
+#vcffilter -s -f "AB > 0.25 & AB < 0.75 | AB < 0.01" Boes-g95maf01p5.recode.vcf > Boes-g95maf01p5.fil1.vcf
+vcffilter -s -f "AB > 0.25 & AB < 0.75 | AB < 0.01" Ccphilus-g95maf01p5.recode.vcf > Ccphilus-g95maf01p5.fil1.vcf
+grep -c '^dDocent' Ccphilus-g95maf01p5.recode.vcf
+32832
+grep -c '^dDocent' Ccphilus-g95maf01p5.fil1.vcf
+17203
+
+#counting het
+vcftools --vcf Ccphilus-g95maf01p5.fil1.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>Ccphilus-g95maf01p5.fil1.het
+done
+paste popidHET Ccphilus-g95maf01p5.fil1.het
+
+CA_KD   Average HET 0.242871
+CA_KT   Average HET 0.231771
+CA_SR   Average HET 0.279898
+LA_BA   Average HET 0.471032
+LA_CH   Average HET 0.286347
+TL_BD   Average HET 0.226674
+TL_LO   Average HET 0.232456
+TL_UB   Average HET 0.224903
+VN_AG   Average HET 0.252443
+VN_CT   Average HET 0.299817
+VN_DT   Average HET 0.222322
+
+
+#vcffilter -f "SAF / SAR > 100 & SRF / SRR > 100 | SAR / SAF > 100 & SRR / SRF > 100" -s Boes-g95maf01p5.fil1.vcf > Boes-g95maf01p5.fil2.vcf
+vcffilter -f "SAF / SAR > 100 & SRF / SRR > 100 | SAR / SAF > 100 & SRR / SRF > 100" -s Ccphilus-g95maf01p5.fil1.vcf > Ccphilus-g95maf01p5.fil2.vcf
+grep -c '^dDocent' Ccphilus-g95maf01p5.fil2.vcf
+13188
+
+#counting het
+vcftools --vcf Ccphilus-g95maf01p5.fil2.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>Ccphilus-g95maf01p5.fil2.het
+done
+paste popidHET Ccphilus-g95maf01p5.fil2.het
+
+CA_KD   Average HET 0.400357
+CA_KT   Average HET 0.383415
+CA_SR   Average HET 0.390229
+LA_BA   Average HET 0.730761
+LA_CH   Average HET 0.392647
+TL_BD   Average HET 0.37899
+TL_LO   Average HET 0.390261
+TL_UB   Average HET 0.387297
+VN_AG   Average HET 0.397638
+VN_CT   Average HET 0.417817
+VN_DT   Average HET 0.385976
+
+
+#vcffilter -f "MQM / MQMR > 0.9 & MQM / MQMR < 1.05" Boes-g95maf01p5.fil2.vcf > Boes-g95maf01p5.fil3.vcf
+vcffilter -f "MQM / MQMR > 0.9 & MQM / MQMR < 1.05" Ccphilus-g95maf01p5.fil2.vcf > Ccphilus-g95maf01p5.fil3.vcf
+grep -c '^dDocent' Ccphilus-g95maf01p5.fil3.vcf
+11677
+
+#couting het
+vcftools --vcf Ccphilus-g95maf01p5.fil3.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>Ccphilus-g95maf01p5.fil3.het
+done
+paste popidHET Ccphilus-g95maf01p5.fil3.het
+
+CA_KD   Average HET 0.430483
+CA_KT   Average HET 0.411771
+CA_SR   Average HET 0.404755
+LA_BA   Average HET 0.831801
+LA_CH   Average HET 0.401815
+TL_BD   Average HET 0.407911
+TL_LO   Average HET 0.417165
+TL_UB   Average HET 0.414417
+VN_AG   Average HET 0.42168
+VN_CT   Average HET 0.433613
+VN_DT   Average HET 0.415815
+
+
+#vcffilter -f "PAIRED > 0.05 & PAIREDR > 0.05 & PAIREDR / PAIRED < 1.75 & PAIREDR / PAIRED > 0.25 | PAIRED < 0.05 & PAIREDR < 0.05" -s Boes-g95maf01p5.fil3.vcf > Boes-g95maf01p5.fil4.vcf
+vcffilter -f "PAIRED > 0.05 & PAIREDR > 0.05 & PAIREDR / PAIRED < 1.75 & PAIREDR / PAIRED > 0.25 | PAIRED < 0.05 & PAIREDR < 0.05" -s Ccphilus-g95maf01p5.fil3.vcf > Ccphilus-g95maf01p5.fil4.vcf
+grep -c '^dDocent' Ccphilus-g95maf01p5.fil4.vcf
+11557
+
+#couting het
+vcftools --vcf  Ccphilus-g95maf01p5.fil4.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>Ccphilus-g95maf01p5.fil4.het
+done
+paste popidHET Ccphilus-g95maf01p5.fil4.het
+
+CA_KD   Average HET 0.436545
+CA_KT   Average HET 0.417594
+CA_SR   Average HET 0.411004
+LA_BA   Average HET 0.841056
+LA_CH   Average HET 0.407424
+TL_BD   Average HET 0.413331
+TL_LO   Average HET 0.422884
+TL_UB   Average HET 0.420443
+VN_AG   Average HET 0.427045
+VN_CT   Average HET 0.439757
+VN_DT   Average HET 0.421627
+
+
+#vcffilter -f "QUAL / DP > 0.25" Boes-g95maf01p5.fil4.vcf > Boes-g95maf01p5.fil5.vcf
+vcffilter -f "QUAL / DP > 0.25" Ccphilus-g95maf01p5.fil4.vcf > Ccphilus-g95maf01p5.fil5.vcf 
+cut -f8 Ccphilus-g95maf01p5.fil5.vcf | grep -oe "DP=[0-9]*" | sed -s 's/DP=//g' > Ccphilus-g95maf01p5.fil5.DEPTH
+grep '^dDocent_' Ccphilus-g95maf01p5.fil5.vcf | cut -f1,2,6 > Ccphilus-g95maf01p5.fil5.vcf.loci.qual
+awk '{ sum += $1; n++ } END { if (n > 0) print sum / n; }' Ccphilus-g95maf01p5.fil5.DEPTH
+6198.55
+python -c "print int(6199+3*(6199**0.5))"
+6435
+
+paste Ccphilus-g95maf01p5.fil5.vcf.loci.qual Ccphilus-g95maf01p5.fil5.DEPTH | awk -v x=6435 '$4 > x' | awk '$3 < 2 * $4' > Ccphilus-g95maf01p5.fil5.lowQDloci
+vcftools --vcf Ccphilus-g95maf01p5.fil5.vcf --site-depth --exclude-positions Ccphilus-g95maf01p5.fil5.lowQDloci --out Ccphilus-g95maf01p5.fil5
+cut -f3 Ccphilus-g95maf01p5.fil5.ldepth > Ccphilus-g95maf01p5.fil5.site.depth
+grep '[0-9]' Ccphilus-g95maf01p5.fil5.site.depth | awk -v x=249 '{print $1/x}' > meandepthpersite
+#x=individuals
+gnuplot
+set terminal dumb size 120, 30
+set autoscale
+set xrange [5:150] 
+unset label
+set title "Histogram of mean depth per site"
+set ylabel "Number of Occurrences"
+set xlabel "Mean Depth"
+binwidth=1
+bin(x,width)=width*floor(x/width) + binwidth/2.0
+set xtics 10
+plot 'meandepthpersite' using (bin($1,binwidth)):(1.0) smooth freq with boxes
+pause -1
+exit
+
+Histogram of mean depth per site
+                                               Histogram of mean depth per site
+  Number of Occurrences
+    1400 ++--+-----**-------+------+-------+------+------+-------+------+-------+------+-------+------+-------+-----++
+         |   +     **       +      +       +      +      +  'meandepthpersite' using (bin($1,binwidth)):(1.0) ****** +
+         |         **                                                                                                |
+    1200 ++        ****                                                                                             ++
+         |        *****                                                                                              |
+         |        *****                                                                                              |
+         |        *****                                                                                              |
+    1000 ++       *****                                                                                             ++
+         |        *****                                                                                              |
+         |        *****                                                                                              |
+     800 ++       ******                                                                                            ++
+         |        ******                                                                                             |
+         |       *******                                                                                             |
+         |       *******                                                                                             |
+     600 ++      *******                                                                                            ++
+         |       ********                                                                                            |
+         |       ********                                                                                            |
+     400 ++      ********                                                                                           ++
+         |      *********                                                                                            |
+         |      *********                                                                                            |
+         |      **********                                                                                           |
+     200 ++     **********                                                                                          ++
+         |      ***********                                                                                          |
+         |   + **************      +       +      +      +       +      +       +      +       +      +       +      +
+       0 ++--+-*******************************************************************************************************
+             10     20      30     40      50     60     70      80     90     100    110     120    130     140    150
+                                                          Mean Depth
+
+#chose cut-off of 30
+
+#vcftools --vcf  Boes-g95maf01p5.fil5.vcf --recode-INFO-all --out Boes-g95maf01p5.FIL --max-meanDP 100 --exclude-positions Boes-g95maf01p5.fil5.lowQDloci --recode 
+vcftools --vcf  Ccphilus-g95maf01p5.fil5.vcf --recode-INFO-all --out Ccphilus-g95maf01p5.FIL --max-meanDP 30 --exclude-positions Ccphilus-g95maf01p5.fil5.lowQDloci --recode 
+File contains 11153 entries and 249 individuals.
+Applying Required Filters.
+Filtering sites by include/exclude positions files
+Filtering sites by mean depth
+After filtering, kept 249 out of 249 Individuals
+After filtering, kept 10238 out of a possible 11153 Sites
+
+#couting het
+vcftools --vcf Ccphilus-g95maf01p5.FIL.recode.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>Ccphilus-g95maf01p5.FIL.het
+done
+paste popidHET Ccphilus-g95maf01p5.FIL.het
+
+CA_KD   Average HET 0.530695
+CA_KT   Average HET 0.507193
+CA_SR   Average HET 0.495424
+LA_BA   Average HET 0.942979
+LA_CH   Average HET 0.490017
+TL_BD   Average HET 0.504521
+TL_LO   Average HET 0.515013
+TL_UB   Average HET 0.512501
+VN_AG   Average HET 0.51529
+VN_CT   Average HET 0.52103
+VN_DT   Average HET 0.51642
+
+
+#vcfallelicprimitives Boes-g95maf01p5.FIL.recode.vcf --keep-info --keep-geno > Boes-g95maf01p5.prim.vcf
+#vcftools --vcf Boes-g95maf01p5.prim.vcf --remove-indels --recode --recode-INFO-all --out SNP.Boes-g95maf01p5
+vcfallelicprimitives Ccphilus-g95maf01p5.FIL.recode.vcf --keep-info --keep-geno > Ccphilus-g95maf01p5.prim.vcf
+vcftools --vcf Ccphilus-g95maf01p5.prim.vcf --remove-indels --recode --recode-INFO-all --out SNP.Ccphilus-g95maf01p5
+File contains 10238 entries and 249 individuals.
+Applying Required Filters.
+Filtering sites by allele type
+After filtering, kept 249 out of 249 Individuals
+After filtering, kept 11120 out of a possible 12152 Sites
+
+
+#couting het
+vcftools --vcf SNP.Ccphilus-g95maf01p5.recode.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>SNP.Ccphilus-g95maf01p5.het
+done
+paste popidHET SNP.Ccphilus-g95maf01p5.het
+
+CA_KD   Average HET 0.516609
+CA_KT   Average HET 0.49038
+CA_SR   Average HET 0.474931
+LA_BA   Average HET 0.939494
+LA_CH   Average HET 0.471298
+TL_BD   Average HET 0.487034
+TL_LO   Average HET 0.498436
+TL_UB   Average HET 0.496816
+VN_AG   Average HET 0.497382
+VN_CT   Average HET 0.504233
+VN_DT   Average HET 0.500953
+
+ln ../../scripts/filter_hwe_by_pop.pl
+#perl filter_hwe_by_pop.pl -v SNP.Boes-g95maf01p5.recode.vcf -p popmap2.6.5 -o SNP.Boes-g95maf01p5.HWE -h 0.01
+perl filter_hwe_by_pop.pl -v SNP.Ccphilus-g95maf01p5.recode.vcf -p popmap.4.5 -o SNP.Ccphilus-g95maf01p5.HWE -h 0.01
+Processing population: AG (13 inds)
+Processing population: BA (28 inds)
+Processing population: BD (30 inds)
+Processing population: CH (19 inds)
+Processing population: CT (3 inds)
+Processing population: DT (32 inds)
+Processing population: KD (30 inds)
+Processing population: KT (31 inds)
+Processing population: LO (12 inds)
+Processing population: SR (19 inds)
+Processing population: UB (32 inds)
+Outputting results of HWE test for filtered loci to 'filtered.hwe'
+Kept 11062 of a possible 11120 loci (filtered 58 loci)
+
+#couting het
+vcftools --vcf SNP.Ccphilus-g95maf01p5.HWE.recode.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>SNP.Ccphilus-g95maf01p5.HWE.het
+done
+paste popidHET SNP.Ccphilus-g95maf01p5.HWE.het
+
+CA_KD   Average HET 0.532359
+CA_KT   Average HET 0.506179
+CA_SR   Average HET 0.489593
+LA_BA   Average HET 0.941459
+LA_CH   Average HET 0.485354
+TL_BD   Average HET 0.50335
+TL_LO   Average HET 0.512525
+TL_UB   Average HET 0.511717
+VN_AG   Average HET 0.512238
+VN_CT   Average HET 0.515103
+VN_DT   Average HET 0.516326
+
+#vcftools --vcf SNP.Boes-g95maf01p5.HWE.recode.vcf --min-alleles 2 --max-alleles 2 --recode --recode-INFO-all --out SNP.Boes-g95maf01p5.HWE.all2
+vcftools --vcf SNP.Ccphilus-g95maf01p5.HWE.recode.vcf --min-alleles 2 --max-alleles 2 --recode --recode-INFO-all --out SNP.Ccphilus-g95maf01p5.HWE.all2
+File contains 11062 entries and 249 individuals.
+Applying Required Filters.
+Filtering sites by number of alleles
+After filtering, kept 249 out of 249 Individuals
+After filtering, kept 10891 out of a possible 11062 Sites
+
+
+#vcftools --vcf SNP.Boes-g95maf01p5.HWE.all2.recode.vcf --geno 0.95 --recode --recode-INFO-all --out SNP.Boes-g95maf01p5.HWE.all2g
+vcftools --vcf SNP.Ccphilus-g95maf01p5.HWE.all2.recode.vcf --max-missing 0.95 --recode --recode-INFO-all --out SNP.Ccphilus-g95maf01p5.HWE.all2g
+Filtering sites by allele frequency and call rate
+After filtering, kept 249 out of 249 Individuals
+After filtering, kept 10850 out of a possible 10891 Sites
+
+#couting het
+vcftools --vcf SNP.Ccphilus-g95maf01p5.HWE.all2g.recode.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>SNP.Ccphilus-g95maf01p5.HWE.all2g.het
+done
+paste popidHET SNP.Ccphilus-g95maf01p5.HWE.all2g.het
+
+CA_KD   Average HET 0.532663
+CA_KT   Average HET 0.506621
+CA_SR   Average HET 0.489771
+LA_BA   Average HET 0.941455
+LA_CH   Average HET 0.485529
+TL_BD   Average HET 0.503676
+TL_LO   Average HET 0.512859
+TL_UB   Average HET 0.512051
+VN_AG   Average HET 0.512355
+VN_CT   Average HET 0.515023
+VN_DT   Average HET 0.516804
+
+#remamed bam files, needed to remove .6.5 for names, created bash script
+ls *_*bam | awk '{print "mv "$0}' >source
+ls *_*bam | sed 's/.4.5//g' >new
+paste source new >rename
+bash rename
+
+#remamed bam.bai files, needed to remove .6.5 for names, created bash script
+ls *_*bam.bai | awk '{print "mv "$0}' >source
+ls *_*bam.bai | sed 's/.4.5//g' >new
+paste source new >rename
+bash rename
+
+mv reference.4.5fasta eference.fasta
+cp $t/SNP.Ccphilus-g95maf01p5.HWE.all2g.recode.vcf .
+
+#perl rad_haplotyper-v1.1.5.pl -v SNP.Boes-g95maf01p5.HWE.all2g.recode.vcf -x 20 -u 10 -mp 1 -ml 10 -n -r reference.fasta -e
+
+t=$(pwd)
+cd ../mapping.April2018 
+ln ../../scripts/rad_haplotyper115HPC.pl
+perl rad_haplotyper115HPC.pl -v SNP.Ccphilus-g95maf01p5.HWE.all2g.recode.vcf -x 20 -u 10 -mp 1 -ml 10 -n -r reference.fasta -e
+
+Filtered 2416 loci below missing data cutoff
+Filtered 0 possible paralogs
+Filtered 0 loci with low coverage or genotyping errors
+Filtered 0 loci with an excess of haplotypes
+
+#rad_haplotyper -v SNP.Boes-g95maf01p5.HWE.all2g.recode.vcf -x 16 -u 10 -mp 1 -ml 10 -n -r reference.fasta -e
+perl rad_haplotyper.pl -v SNP.Ccphilus-g95maf01p5.HWE.all2g.recode.vcf -x 20 -u 10 -mp 1 -ml 10 -n -r reference.fasta -e
+
+head stats.out
+Locus	Sites	Haplotypes	Inds_Haplotyped	Total_Inds	Prop_Haplotyped	Status	Poss_Paralog	Low_Cov/Geno_Err	Miss_Geno	Comment
+dDocent_Contig_100094	1	2	111	113	0.982	PASSED	0	0	2	
+dDocent_Contig_1009	1	2	112	113	0.991	PASSED	0	0	1	
+dDocent_Contig_101266	2	3	87	113	0.770	FILTERED	16	10	0	Possible paralog
+dDocent_Contig_101552	1	2	110	113	0.973	PASSED	0	0	3	
+dDocent_Contig_101986	1	2	111	113	0.982	PASSED	0	0	2	
+dDocent_Contig_103281	1	2	111	113	0.982	PASSED	0	0	2	
+dDocent_Contig_10372	1	2	111	113	0.982	PASSED	0	0	2	
+dDocent_Contig_10397	1	2	110	113	0.973	PASSED	0	0	3	
+
+#no mawk step
+grep FILTERED stats.out | cut -f1 > loci.to.remove
+
+
+
+./remove.bad.hap.loci.sh loci.to.remove SNP.Boes-g95maf01p5.HWE.all2g.recode.vcf
+
+grep -v '#' SNP.Boes-g95maf01p5.HWE.all2g.recode.vcf | wc -l
+810
+
+
+bash Filter_one_random_snp_per_contig.sh SNP.Boes-g95maf01p5.HWE.all2g.recode.vcf
+
+Filtered VCF file is saved under name SNP.Boes-g95maf01p5.HWE.all2g.filtered1SNPper.vcf
+grep -v '#' SNP.Boes-g95maf01p5.HWE.all2g.filtered1SNPper.vcf | wc -l
+
+638
+
+
+
+
+
