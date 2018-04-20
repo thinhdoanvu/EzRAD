@@ -703,3 +703,25 @@ TL_UB	Average HET 0.564279
 VN_AG	Average HET 0.571975
 VN_CT	Average HET 0.55521
 VN_DT	Average HET 0.574303
+
+#Neu het con thap qua thi chay tiep cai nay
+vcftools --vcf vcftools --vcf best.SNP.Ccphilus-g95maf01p5.HWE.all2g.filtered.vcf --hwe 0.01 --recode --recode-INFO-all --out hwecutoff
+vcftools --vcf hwecutoff.recode.vcf --het
+t=$(cat popidHET)
+for i in $t
+do
+grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>hwecutoff.het
+done
+paste popidHET hwecutoff.het
+
+CA_KD   Average HET -0.0262343
+CA_KT   Average HET -0.0768842
+CA_SR   Average HET -0.0899089
+LA_BA   Average HET 0.904389
+LA_CH   Average HET -0.0819453
+TL_BD   Average HET -0.063656
+TL_LO   Average HET -0.0493983
+TL_UB   Average HET -0.0723781
+VN_AG   Average HET -0.0575023
+VN_CT   Average HET -0.03837
+VN_DT   Average HET -0.0416256
