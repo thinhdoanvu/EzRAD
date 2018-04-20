@@ -706,6 +706,9 @@ VN_DT	Average HET 0.574303
 
 #Neu het con thap qua thi chay tiep cai nay
 vcftools --vcf vcftools --vcf best.SNP.Ccphilus-g95maf01p5.HWE.all2g.filtered.vcf --hwe 0.01 --recode --recode-INFO-all --out hwecutoff
+After filtering, kept 249 out of 249 Individuals
+After filtering, kept 749 out of a possible 1893 Sites
+
 vcftools --vcf hwecutoff.recode.vcf --het
 t=$(cat popidHET)
 for i in $t
