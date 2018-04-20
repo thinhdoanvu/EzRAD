@@ -1,0 +1,117 @@
+#Step1. Filter for migration only 
+#max-missing 100 means for purify 100 percent data fill up
+vcftools --vcf NeutralLoci.recode.vcf --max-missing 1 --recode --recode-INFO-all --out max100
+After filtering, kept 80 out of 80 Individuals
+After filtering, kept 661 out of a possible 721 Sites
+
+#Remove all individulas relatedness if you have
+#vcftools --vcf hwe.rmsite.recode.vcf --remove related.list --recode --recode-INFO-all --out rmind.related
+
+#Make sure the same number of individuals inside each pop. Find the minimum pop size (QN=24).
+#Remove all individuals over MIN (24)
+nano migraterm.indv
+INDV
+KG_KG204 
+KG_KG206 
+KH_LS102 
+KH_LS104 
+KH_NT216 
+KH_NT217 
+PY_PY209 
+PY_PY210 
+
+vcftools --vcf max100.recode.vcf --remove migraterm.indv --recode --recode-INFO-all --out rmind.4migrate
+After filtering, kept 72 out of 80 Individuals
+After filtering, kept 661 out of a possible 661 Sites
+
+grep CHROM rmind.4migrate.recode.vcf | cut -f10- | tr '\t' '\n' > popRMImigrate
+awk '{print substr($0,4,2)}' popRMImigrate > popidRMImigrate
+paste popRMImigrate popidRMImigrate > popmap.5.5.related
+
+ln ../../scripts/Filter_one_random_snp_per_contig.sh
+./Filter_one_random_snp_per_contig.sh rmind.4migrate.recode.vcf
+awk '!/#/' best.rmind.4migrate.vcf | wc -l
+276
+
+t=$(pwd)
+cd ../mapping.April2018
+#CutoffCode="6.5"
+cp ../../scripts/rad_haplotyper115HPC.pl ./
+#Neu loi @ line 3 thi
+#module load parallel/20180122
+#module load vcflib/1.0
+#module load vcftools/0.1.15
+
+perl rad_haplotyper115HPC.pl -v $t/best.rmind.4migrate.vcf   -x 8 -mp 1 -u 10 -ml 4 -n -e -p $t/popmap.5.5.related -r reference.4.5.fasta -a $t/migrate.ima
+Filtered 0 loci below missing data cutoff
+Filtered 0 possible paralogs
+Filtered 0 loci with low coverage or genotyping errors
+Filtered 0 loci with an excess of haplotypes
+Writing IMa file: /work/vietnam/dthinh/2018_CR_GHE/filter_removeHP.April2018/migrate.ima
+
+#Step 2. Make input file
+#couting Contig
+grep -c Contig migrate.ima
+#276 is a result
+
+#list 6th first lines
+IMa Test
+3
+KG KH QN
+(0,1):2
+276
+dDocent_Contig_616 48 48 48 299 I 1
+
+Explanation
+title: IMa Test
+3: number of groups
+KG KH QN: names of groups
+276: number of contig
+dDocent_Contig_616 48 48 48 299 I 1: Name_of_contig number_of_individuals_for_KG number_of_individuals_for_KH number_of_individuals_for_QN number_of_loci Don'tcare Don'tcare
+
+#Step 3. Make real infile
+nano infile
+#add first line
+3 276
+#save infile by Ctrl + O then Ctlr+X
+
+#make header data
+grep Contig migrate.ima | sed 's/ /\t/g' | cut -f5 | tr '\n' ' ' | awk '{print $0}' >>infile
+
+#Explanation
+sed 's/ /\t/g': replace space chracter by tab character
+cut -f5 : choose 5th column (why 5 not 1,2,3,4 or 6?). 5 means for number of loci incase you only have 3 pops. If you have 4 pops you wil have 6 for this valaue
+tr '\n' ' ' : replace newline (enter) chracter by space character
+awk '{print $0}' >>infile : concat to infile
+This is your result:
+3 276
+299 311 299 299 299 299 299 299 299 299 299 299 299 299 299 299 336 299 299 299 301 329 299 299 300 299 299 299 299 299 299 299 301 299 299 299 299 299 299 314 299 299 299 299 323 299 299 344 299 299 299 299 299 299 354 299 299 299 299 299 299 299 299 299 335 308 299 299 317 299 299 299 299 299 299 299 299 332 299 299 326 299 299 299 299 324 299 299 299 299 419 300 299 299 310 299 299 306 299 299 301 299 299 299 299 305 299 299 299 300 299 299 299 299 300 314 276 299 299 299 299 299 300 305 299 299 313 299 299 299 314 299 299 299 299 299 315 336 299 299 299 304 299 299 299 323 356 299 299 299 298 299 299 302 299 300 299 299 317 299 299 299 299 299 299 348 299 298 299 299 299 299 299 299 299 303 300 195 317 299 299 313 299 299 299 299 299 299 299 299 331 299 299 299 299 299 300 299 299 319 299 299 313 206 299 326 299 299 299 320 299 299 300 299 299 299 299 299 299 300 299 302 299 299 300 299 299 299 299 299 299 299 306 299 299 299 314 300 299 299 299 298 299 314 299 299 299 299 301 317 195 299 299 298 299 299 299 299 299 299 313 299 305 299 299 299 299 299 299 299 299 301 299 299 299 300
+#The 2nd row have 276 columns (the number of contigs)
+
+#cp KG to infile first because your infile begining with KG
+grep Contig migrate.ima | sed 's/ /\t/g' | cut -f2 | tr '\n' ' '  | awk '{print $0"KienGiang"}' >> infile
+grep KG_ migrate.ima >> infile
+
+#cp KH to infile second because your infile begining with KH
+grep Contig migrate.ima | sed 's/ /\t/g' | cut -f3 | tr '\n' ' '  | awk '{print $0"KhanhHoa"}' >> infile
+grep KH_ migrate.ima >> infile
+
+#cp QN to infile last because your infile begining with QN
+grep Contig migrate.ima | sed 's/ /\t/g' | cut -f4| tr '\n' ' '  | awk '{print $0"QuangNinh"}' >> infile
+grep QN_ migrate.ima >> infile
+
+#RUN migrate
+#!/bin/bash
+
+#SBATCH --job-name=migN_GHE
+#SBATCH --time=96:00:00
+#SBATCH -p normal
+#SBATCH --nodes=1
+#SBATCH --mail-user=thinhdv@ntu.edu.vn
+#SBATCH --mail-type=begin  # email me when the job starts
+#SBATCH --mail-type=end    # email me when the job finish
+
+module load migrate/3.6.11
+module load openmpi/gcc/64/1.8.5
+
+mpirun -np 20 migrate-n-mpi parmfile.full -nomenu
