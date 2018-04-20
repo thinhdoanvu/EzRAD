@@ -1,0 +1,133 @@
+###################### RUN MIGARTE
+#Copy cac file infile thanh infile.full, infile.up2down, infile.down2up, infile.full (4 models test)
+
+Buoc 4. migrate-n 
+4.1. Chon I
+4.1.1. input: infile.full
+4.1.2. output: Full_model
+4.1.3. Y
+4.1.2. Chon D
+4.1.2.1. (s) sequence DNA
+----Y----
+5.1. Chon S
+5.1. Chon 13 (HEATING - de sau nay co cac chi so Harmonic va Beizeir de chon best Model ---- KHONG CO LA SAI)
+5.1.1. YES
+5.1.2. 4
+5.1.3. 10
+5.1.4. 1
+5.1.5. 1.5
+5.1.6. 3
+5.1.7. 1000000
+Is this correct? [YES or NO]
+===> YES
+5.1.8.Y
+Chon S - Chon 7
+7 - 1- 0
+Set Theta prior distribution? 
+0.000000 1.000000 0.100000
+----Y----
+2 - 0
+Set Migration prior distribution?
+0.000000 10000.000000 1000.000000
+----Y----
+Chon S - Chon 11
+Burn-in for each chain: 
+20000
+----Y----
+6.1. Chon P
+6.1.1. 8 (8 pops)
+6.1.2. Nhap cac thong so cho full models
+64 gia tri nhu sau
+(1-AG	2-DT	3-CT	4-VL	5-TG	6-BT	7-TV	8-ST)
+	1	2	3	4	5	6	8
+1	*	*	*	*	*	*	*
+2	*	*	*	*	*	*	*
+3	*	*	*	*	*	*	*
+4	*	*	*	*	*	*	*
+5	*	*	*	*	*	*	*
+6	*	*	*	*	*	*	*
+7	*	*	*	*	*	*	*
+8	*	*	*	*	*	*	*
+----Y----
+7.1 W (Write out setting parm file)
+----Q---Quit
+
+########
+KET QUA SE CO parmfile
+########
+Doi ten parmfile thanh parmfile.full
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Thuc hien lai tu Buoc 4 voi cac thong so khac biet nhu sau:
+custom-migration
+
+
+4.1.1. input: infile.down2up
+4.1.2. output: Down2Up_model
+
+6.1.2. Nhap cac thong so cho down 2 up
+64 gia tri nhu sau
+(1-AG	2-DT	3-CT	4-VL	5-TG	6-BT	7-TV	8-ST)
+   AnGiang     * * * * * * * *
+  DongThap     0 * * * * * * *
+    CanTho     0 0 * * * * * *
+  VinhLong     0 0 0 * * * * *
+ TienGiang     0 0 0 0 * * * *
+    BenTre     0 0 0 0 0 * * 0
+   TraVinh     0 0 0 0 0 0 * 0
+  SocTrang     0 0 0 0 0 0 0 *
+########
+KET QUA SE CO parmfile doi ten file thanh parmfile.down2up
+########
+  
+ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Thuc hien lai tu Buoc 4 voi cac thong so khac biet nhu sau:
+4.1.1. input: infile.up2down
+4.1.2. output: Up2Down_model
+
+6.1.2. Nhap cac thong so cho Up 2 down model
+64 gia tri nhu sau
+(1-AG	2-DT	3-CT	4-VL	5-TG	6-BT	7-TV	8-ST) 
+   AnGiang     * * 0 0 0 0 0 0
+  DongThap     * * 0 0 0 0 0 0
+    CanTho     * * * 0 0 0 0 0
+  VinhLong     * * 0 * 0 0 0 0
+ TienGiang     * * 0 * * 0 0 0
+    BenTre     * * 0 * * * 0 0
+   TraVinh     * * 0 * * 0 * 0
+  SocTrang     * * 0 0 0 0 0 *
+########
+KET QUA SE CO parmfile doi ten file thanh parmfile.up2down
+########
+
+ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Thuc hien lai tu Buoc 4 voi cac thong so khac biet nhu sau:
+4.1.1. input: infile.pair
+4.1.2. output: Pair_model
+
+6.1.2. Nhap cac thong so cho Pair model
+64 gia tri nhu sau
+(1-AG	2-DT	3-CT	4-VL	5-TG	6-BT	7-TV	8-ST) 
+   AnGiang     * * * 0 0 0 0 0
+  DongThap     * * 0 * 0 0 0 0
+    CanTho     * 0 * 0 0 0 0 *
+  VinhLong     0 * 0 * * 0 * 0
+ TienGiang     0 0 0 * * * * 0
+    BenTre     0 0 0 0 * * * 0
+   TraVinh     0 0 0 * * * * 0
+  SocTrang     0 0 * 0 0 0 0 *
+########
+ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Thuc hien lai tu Buoc 4 voi cac thong so khac biet nhu sau:
+4.1.1. input: infile.panmixia
+4.1.2. output: Pair_panmixia
+
+7   Sampling localities
+==> nhap so quan the minh dang co = 7
+==> nhap cac con so tuong ung voi 7 quan the: 1 1 1 1 1 1 1
+
+8 Migration Mode: *************************************************
+
+########
+KET QUA SE CO parmfile doi ten file thanh parmfile.pair
+########
