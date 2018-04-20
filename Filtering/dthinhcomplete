@@ -3,11 +3,15 @@ module load vcftools/0.1.15
 module load vcflib/1.0
 module load parallel/20180122
 
-grep CHROM TotalRawSNPs.4.5.vcf | cut -f10- | tr '\t' '\n' > popRMI
+CUTOFF=4
+CUTOFF=5
+name=Ccphilus
+
+grep CHROM TotalRawSNPs.CUTOFF.CUTOFF2.vcf | cut -f10- | tr '\t' '\n' > popRMI
 awk '{print substr($0,1,5)}' popRMI | uniq  > popidHET
 
 #vcftools --vcf TotalRawSNPs.4.5.vcf --geno 0.5 --mac 3 --minQ 30 --recode --recode-INFO-all --out BoesMC-g5mac3minQ30
-vcftools --vcf TotalRawSNPs.4.5.vcf --max-missing 0.5 --mac 3 --minQ 30 --recode --recode-INFO-all --out Ccphilus-g5mac3minQ30
+vcftools --vcf TotalRawSNPs.CUTOFF.CUTOFF2.vcf --max-missing 0.5 --mac 3 --minQ 30 --recode --recode-INFO-all --out $name-g5mac3minQ30
 
 File contains 231144 entries and 301 individuals.
 Applying Required Filters.
@@ -18,13 +22,13 @@ After filtering, kept 301 out of 301 Individuals
 After filtering, kept 415712 out of a possible 1041926 Sites
 
 #counting het
-vcftools --vcf Ccphilus-g5mac3minQ30.recode.vcf --het
+vcftools --vcf $name-g5mac3minQ30.recode.vcf --het
 t=$(cat popidHET)
 for i in $t 
 do
-  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>g5mac3minQ30.het
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>$name-g5mac3minQ30.het
 done
-paste popidHET g5mac3minQ30.het
+paste popidHET $name-g5mac3minQ30.het
 
 CA_KD   Average HET 0.432659
 CA_KT   Average HET 0.446766
@@ -40,20 +44,20 @@ VN_DT   Average HET 0.428426
 
 
 #vcftools --vcf BoesMC-g5mac3minQ30.recode.vcf --minDP 3 --recode --recode-INFO-all --out Boes-g5mac3minQ30minDP3
-vcftools --vcf Ccphilus-g5mac3minQ30.recode.vcf --minDP 3 --recode --recode-INFO-all --out Ccphilus-g5mac3minQ30minDP3
+vcftools --vcf $name-g5mac3minQ30.recode.vcf --minDP 3 --recode --recode-INFO-all --out $name-g5mac3minQ30minDP3
 Filtering out Genotypes with Depth less than 3 and greater than 2.14748e+09
 After filtering, kept 301 out of 301 Individuals
 After filtering, kept 415712 out of a possible 415712 Sites
 
 
 #counting het
-vcftools --vcf Ccphilus-g5mac3minQ30minDP3.recode.vcf --het
+vcftools --vcf $name-g5mac3minQ30minDP3.recode.vcf --het
 t=$(cat popidHET)
 for i in $t 
 do
-  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>g5mac3minQ30minDP3.het
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>$name-g5mac3minQ30minDP3.het
 done
-paste popidHET g5mac3minQ30minDP3.het
+paste popidHET $name-g5mac3minQ30minDP3.het
 
 CA_KD   Average HET 0.304141
 CA_KT   Average HET 0.36789
@@ -69,9 +73,11 @@ VN_DT   Average HET 0.325193
 
 
 #vcftools --vcf Boes-g5mac3minQ30minDP3.recode.vcf --missing
-vcftools --vcf Ccphilus-g5mac3minQ30minDP3.recode.vcf --missing-indv
+vcftools --vcf $name-g5mac3minQ30minDP3.recode.vcf --missing-indv
 cat out.imiss
 
+#x=numberofloci
+#grep 'x' out.imiss | cut -f5 > totalmissing
 grep '415712' out.imiss | cut -f5 > totalmissing
 gnuplot
 set terminal dumb size 120, 30
@@ -121,7 +127,7 @@ awk '$5 > 0.5' out.imiss | cut -f1 > lowCover.indv
 nano lowCover.indv
 
 #vcftools --vcf Boes-g5mac3minQ30minDP3.recode.vcf --remove lowCover.indv --recode --recode-INFO-all --out Boes-g5mac3minQ30minDPlm
-vcftools --vcf Ccphilus-g5mac3minQ30minDP3.recode.vcf --remove lowCover.indv --recode --recode-INFO-all --out Ccphilus-g5mac3minQ30minDPlm
+vcftools --vcf $name-g5mac3minQ30minDP3.recode.vcf --remove lowCover.indv --recode --recode-INFO-all --out $name-g5mac3minQ30minDPlm
 File contains 415712 entries and 301 individuals.
 Applying Required Filters.
 Excluding individuals in 'exclude' list
@@ -130,13 +136,13 @@ After filtering, kept 415712 out of a possible 415712 Sites
 
 
 #counting het
-vcftools --vcf Ccphilus-g5mac3minQ30minDPlm.recode.vcf --het
+vcftools --vcf $name-g5mac3minQ30minDPlm.recode.vcf --het
 t=$(cat popidHET)
 for i in $t 
 do
-  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>g5mac3minQ30minDPlm.het
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>$name-g5mac3minQ30minDPlm.het
 done
-paste popidHET g5mac3minQ30minDPlm.het
+paste popidHET $name-g5mac3minQ30minDPlm.het
 
 CA_KD   Average HET 0.29969
 CA_KT   Average HET 0.370412
@@ -152,7 +158,7 @@ VN_DT   Average HET 0.318477
 
 
 #vcftools --vcf Boes-g5mac3minQ30minDPlm.recode.vcf --geno 0.95 --maf 0.01 --recode --recode-INFO-all --out Boes-g95maf01
-vcftools --vcf Ccphilus-g5mac3minQ30minDPlm.recode.vcf --max-missing 0.95 --maf 0.01 --recode --recode-INFO-all --out Ccphilus-g95maf01
+vcftools --vcf $name-g5mac3minQ30minDPlm.recode.vcf --max-missing 0.95 --maf 0.01 --recode --recode-INFO-all --out $name-g95maf01
 File contains 415712 entries and 249 individuals.
 Applying Required Filters.
 Filtering sites by allele frequency and call rate
@@ -161,13 +167,13 @@ After filtering, kept 61708 out of a possible 415712 Sites
 
 
 #counting het
-vcftools --vcf Ccphilus-g95maf01.recode.vcf --het
+vcftools --vcf $name-g95maf01.recode.vcf --het
 t=$(cat popidHET)
 for i in $t 
 do
-  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>g95maf01.het
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>$name-g95maf01.het
 done
-paste popidHET g95maf01.het
+paste popidHET $name-g95maf01.het
 
 CA_KD   Average HET 0.261655
 CA_KT   Average HET 0.288416
@@ -182,17 +188,17 @@ VN_CT   Average HET 0.338427
 VN_DT   Average HET 0.250727
 
 
-grep CHROM Ccphilus-g95maf01.recode.vcf | cut -f10- | tr '\t' '\n' > popRMI
+grep CHROM $name-g95maf01.recode.vcf | cut -f10- | tr '\t' '\n' > popRMI
 awk '{print substr($0,4,2)}' popRMI > popidRMI
-paste popRMI popidRMI > popmap.4.5
+paste popRMI popidRMI > popmap.CUTOFF.CUTOFF2
 uniq popidRMI > popid_uniqRMI
 t=$(cat popid_uniqRMI)
 for i in $t
 do
-  grep -w $i popmap.4.5 > $i.keep
+  grep -w $i popmap.CUTOFF.CUTOFF2 > $i.keep
 done
 
-ls *keep | sed 's/.keep//g' | parallel 'vcftools --vcf Ccphilus-g95maf01.recode.vcf --keep {}.keep --missing-site --out {}'
+ls *keep | sed 's/.keep//g' | parallel 'vcftools --vcf $name-g95maf01.recode.vcf --keep {}.keep --missing-site --out {}'
 
 AG=13
 CT=3
@@ -259,7 +265,7 @@ EOF
 
 awk '$6 > 0.1' all.badlociRMI | cut -f1,2 > badloci
 #vcftools --vcf Boes-g95maf01.recode.vcf --exclude-positions badloci --recode --recode-INFO-all --out Boes-g95maf01p5
-vcftools --vcf Ccphilus-g95maf01.recode.vcf --exclude-positions badloci --recode --recode-INFO-all --out Ccphilus-g95maf01p5
+vcftools --vcf $name-g95maf01.recode.vcf --exclude-positions badloci --recode --recode-INFO-all --out $name-g95maf01p5
 File contains 61708 entries and 249 individuals.
 Applying Required Filters.
 Filtering sites by include/exclude positions files
@@ -267,13 +273,13 @@ After filtering, kept 249 out of 249 Individuals
 After filtering, kept 32832 out of a possible 61708 Sites
 
 #counting het
-vcftools --vcf Ccphilus-g95maf01p5.recode.vcf --het
+vcftools --vcf $name-g95maf01p5.recode.vcf --het
 t=$(cat popidHET)
 for i in $t 
 do
-  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>Ccphilus-g95maf01p5.het
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>$name-g95maf01p5.het
 done
-paste popidHET Ccphilus-g95maf01p5.het
+paste popidHET $name-g95maf01p5.het
 
 CA_KD   Average HET 0.137485
 CA_KT   Average HET 0.150488
@@ -289,20 +295,20 @@ VN_DT   Average HET 0.118477
 
 
 #vcffilter -s -f "AB > 0.25 & AB < 0.75 | AB < 0.01" Boes-g95maf01p5.recode.vcf > Boes-g95maf01p5.fil1.vcf
-vcffilter -s -f "AB > 0.25 & AB < 0.75 | AB < 0.01" Ccphilus-g95maf01p5.recode.vcf > Ccphilus-g95maf01p5.fil1.vcf
-grep -c '^dDocent' Ccphilus-g95maf01p5.recode.vcf
+vcffilter -s -f "AB > 0.25 & AB < 0.75 | AB < 0.01" $name-g95maf01p5.recode.vcf > $name-g95maf01p5.fil1.vcf
+grep -c '^dDocent' $name-g95maf01p5.recode.vcf
 32832
-grep -c '^dDocent' Ccphilus-g95maf01p5.fil1.vcf
+grep -c '^dDocent' $name-g95maf01p5.fil1.vcf
 17203
 
 #counting het
-vcftools --vcf Ccphilus-g95maf01p5.fil1.vcf --het
+vcftools --vcf $name-g95maf01p5.fil1.vcf --het
 t=$(cat popidHET)
 for i in $t 
 do
-  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>Ccphilus-g95maf01p5.fil1.het
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>$name-g95maf01p5.fil1.het
 done
-paste popidHET Ccphilus-g95maf01p5.fil1.het
+paste popidHET $name-g95maf01p5.fil1.het
 
 CA_KD   Average HET 0.242871
 CA_KT   Average HET 0.231771
@@ -318,18 +324,18 @@ VN_DT   Average HET 0.222322
 
 
 #vcffilter -f "SAF / SAR > 100 & SRF / SRR > 100 | SAR / SAF > 100 & SRR / SRF > 100" -s Boes-g95maf01p5.fil1.vcf > Boes-g95maf01p5.fil2.vcf
-vcffilter -f "SAF / SAR > 100 & SRF / SRR > 100 | SAR / SAF > 100 & SRR / SRF > 100" -s Ccphilus-g95maf01p5.fil1.vcf > Ccphilus-g95maf01p5.fil2.vcf
-grep -c '^dDocent' Ccphilus-g95maf01p5.fil2.vcf
+vcffilter -f "SAF / SAR > 100 & SRF / SRR > 100 | SAR / SAF > 100 & SRR / SRF > 100" -s $name-g95maf01p5.fil1.vcf > $name-g95maf01p5.fil2.vcf
+grep -c '^dDocent' $name-g95maf01p5.fil2.vcf
 13188
 
 #counting het
-vcftools --vcf Ccphilus-g95maf01p5.fil2.vcf --het
+vcftools --vcf $name-g95maf01p5.fil2.vcf --het
 t=$(cat popidHET)
 for i in $t 
 do
-  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>Ccphilus-g95maf01p5.fil2.het
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>$name-g95maf01p5.fil2.het
 done
-paste popidHET Ccphilus-g95maf01p5.fil2.het
+paste popidHET $name-g95maf01p5.fil2.het
 
 CA_KD   Average HET 0.400357
 CA_KT   Average HET 0.383415
@@ -345,18 +351,18 @@ VN_DT   Average HET 0.385976
 
 
 #vcffilter -f "MQM / MQMR > 0.9 & MQM / MQMR < 1.05" Boes-g95maf01p5.fil2.vcf > Boes-g95maf01p5.fil3.vcf
-vcffilter -f "MQM / MQMR > 0.9 & MQM / MQMR < 1.05" Ccphilus-g95maf01p5.fil2.vcf > Ccphilus-g95maf01p5.fil3.vcf
-grep -c '^dDocent' Ccphilus-g95maf01p5.fil3.vcf
+vcffilter -f "MQM / MQMR > 0.9 & MQM / MQMR < 1.05" $name-g95maf01p5.fil2.vcf > $name-g95maf01p5.fil3.vcf
+grep -c '^dDocent' $name-g95maf01p5.fil3.vcf
 11677
 
 #couting het
-vcftools --vcf Ccphilus-g95maf01p5.fil3.vcf --het
+vcftools --vcf $name-g95maf01p5.fil3.vcf --het
 t=$(cat popidHET)
 for i in $t 
 do
-  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>Ccphilus-g95maf01p5.fil3.het
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>$name-g95maf01p5.fil3.het
 done
-paste popidHET Ccphilus-g95maf01p5.fil3.het
+paste popidHET $name-g95maf01p5.fil3.het
 
 CA_KD   Average HET 0.430483
 CA_KT   Average HET 0.411771
@@ -372,18 +378,18 @@ VN_DT   Average HET 0.415815
 
 
 #vcffilter -f "PAIRED > 0.05 & PAIREDR > 0.05 & PAIREDR / PAIRED < 1.75 & PAIREDR / PAIRED > 0.25 | PAIRED < 0.05 & PAIREDR < 0.05" -s Boes-g95maf01p5.fil3.vcf > Boes-g95maf01p5.fil4.vcf
-vcffilter -f "PAIRED > 0.05 & PAIREDR > 0.05 & PAIREDR / PAIRED < 1.75 & PAIREDR / PAIRED > 0.25 | PAIRED < 0.05 & PAIREDR < 0.05" -s Ccphilus-g95maf01p5.fil3.vcf > Ccphilus-g95maf01p5.fil4.vcf
-grep -c '^dDocent' Ccphilus-g95maf01p5.fil4.vcf
+vcffilter -f "PAIRED > 0.05 & PAIREDR > 0.05 & PAIREDR / PAIRED < 1.75 & PAIREDR / PAIRED > 0.25 | PAIRED < 0.05 & PAIREDR < 0.05" -s $name-g95maf01p5.fil3.vcf > $name-g95maf01p5.fil4.vcf
+grep -c '^dDocent' $name-g95maf01p5.fil4.vcf
 11557
 
 #couting het
-vcftools --vcf  Ccphilus-g95maf01p5.fil4.vcf --het
+vcftools --vcf  $name-g95maf01p5.fil4.vcf --het
 t=$(cat popidHET)
 for i in $t 
 do
-  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>Ccphilus-g95maf01p5.fil4.het
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>$name-g95maf01p5.fil4.het
 done
-paste popidHET Ccphilus-g95maf01p5.fil4.het
+paste popidHET $name-g95maf01p5.fil4.het
 
 CA_KD   Average HET 0.436545
 CA_KT   Average HET 0.417594
@@ -399,18 +405,18 @@ VN_DT   Average HET 0.421627
 
 
 #vcffilter -f "QUAL / DP > 0.25" Boes-g95maf01p5.fil4.vcf > Boes-g95maf01p5.fil5.vcf
-vcffilter -f "QUAL / DP > 0.25" Ccphilus-g95maf01p5.fil4.vcf > Ccphilus-g95maf01p5.fil5.vcf 
-cut -f8 Ccphilus-g95maf01p5.fil5.vcf | grep -oe "DP=[0-9]*" | sed -s 's/DP=//g' > Ccphilus-g95maf01p5.fil5.DEPTH
-grep '^dDocent_' Ccphilus-g95maf01p5.fil5.vcf | cut -f1,2,6 > Ccphilus-g95maf01p5.fil5.vcf.loci.qual
-awk '{ sum += $1; n++ } END { if (n > 0) print sum / n; }' Ccphilus-g95maf01p5.fil5.DEPTH
+vcffilter -f "QUAL / DP > 0.25" $name-g95maf01p5.fil4.vcf > $name-g95maf01p5.fil5.vcf 
+cut -f8 $name-g95maf01p5.fil5.vcf | grep -oe "DP=[0-9]*" | sed -s 's/DP=//g' > $name-g95maf01p5.fil5.DEPTH
+grep '^dDocent_' $name-g95maf01p5.fil5.vcf | cut -f1,2,6 > $name-g95maf01p5.fil5.vcf.loci.qual
+awk '{ sum += $1; n++ } END { if (n > 0) print sum / n; }' $name-g95maf01p5.fil5.DEPTH
 6198.55
 python -c "print int(6199+3*(6199**0.5))"
 6435
 
-paste Ccphilus-g95maf01p5.fil5.vcf.loci.qual Ccphilus-g95maf01p5.fil5.DEPTH | awk -v x=6435 '$4 > x' | awk '$3 < 2 * $4' > Ccphilus-g95maf01p5.fil5.lowQDloci
-vcftools --vcf Ccphilus-g95maf01p5.fil5.vcf --site-depth --exclude-positions Ccphilus-g95maf01p5.fil5.lowQDloci --out Ccphilus-g95maf01p5.fil5
-cut -f3 Ccphilus-g95maf01p5.fil5.ldepth > Ccphilus-g95maf01p5.fil5.site.depth
-grep '[0-9]' Ccphilus-g95maf01p5.fil5.site.depth | awk -v x=249 '{print $1/x}' > meandepthpersite
+paste $name-g95maf01p5.fil5.vcf.loci.qual $name-g95maf01p5.fil5.DEPTH | awk -v x=6435 '$4 > x' | awk '$3 < 2 * $4' > $name-g95maf01p5.fil5.lowQDloci
+vcftools --vcf $name-g95maf01p5.fil5.vcf --site-depth --exclude-positions $name-g95maf01p5.fil5.lowQDloci --out $name-g95maf01p5.fil5
+cut -f3 $name-g95maf01p5.fil5.ldepth > $name-g95maf01p5.fil5.site.depth
+grep '[0-9]' $name-g95maf01p5.fil5.site.depth | awk -v x=249 '{print $1/x}' > meandepthpersite
 #x=individuals
 gnuplot
 set terminal dumb size 120, 30
@@ -461,7 +467,7 @@ Histogram of mean depth per site
 #chose cut-off of 30
 
 #vcftools --vcf  Boes-g95maf01p5.fil5.vcf --recode-INFO-all --out Boes-g95maf01p5.FIL --max-meanDP 100 --exclude-positions Boes-g95maf01p5.fil5.lowQDloci --recode 
-vcftools --vcf  Ccphilus-g95maf01p5.fil5.vcf --recode-INFO-all --out Ccphilus-g95maf01p5.FIL --max-meanDP 30 --exclude-positions Ccphilus-g95maf01p5.fil5.lowQDloci --recode 
+vcftools --vcf  $name-g95maf01p5.fil5.vcf --recode-INFO-all --out $name-g95maf01p5.FIL --max-meanDP 30 --exclude-positions $name-g95maf01p5.fil5.lowQDloci --recode 
 File contains 11153 entries and 249 individuals.
 Applying Required Filters.
 Filtering sites by include/exclude positions files
@@ -470,13 +476,13 @@ After filtering, kept 249 out of 249 Individuals
 After filtering, kept 10238 out of a possible 11153 Sites
 
 #couting het
-vcftools --vcf Ccphilus-g95maf01p5.FIL.recode.vcf --het
+vcftools --vcf $name-g95maf01p5.FIL.recode.vcf --het
 t=$(cat popidHET)
 for i in $t 
 do
-  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>Ccphilus-g95maf01p5.FIL.het
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>$name-g95maf01p5.FIL.het
 done
-paste popidHET Ccphilus-g95maf01p5.FIL.het
+paste popidHET $name-g95maf01p5.FIL.het
 
 CA_KD   Average HET 0.530695
 CA_KT   Average HET 0.507193
@@ -493,8 +499,8 @@ VN_DT   Average HET 0.51642
 
 #vcfallelicprimitives Boes-g95maf01p5.FIL.recode.vcf --keep-info --keep-geno > Boes-g95maf01p5.prim.vcf
 #vcftools --vcf Boes-g95maf01p5.prim.vcf --remove-indels --recode --recode-INFO-all --out SNP.Boes-g95maf01p5
-vcfallelicprimitives Ccphilus-g95maf01p5.FIL.recode.vcf --keep-info --keep-geno > Ccphilus-g95maf01p5.prim.vcf
-vcftools --vcf Ccphilus-g95maf01p5.prim.vcf --remove-indels --recode --recode-INFO-all --out SNP.Ccphilus-g95maf01p5
+vcfallelicprimitives $name-g95maf01p5.FIL.recode.vcf --keep-info --keep-geno > $name-g95maf01p5.prim.vcf
+vcftools --vcf $name-g95maf01p5.prim.vcf --remove-indels --recode --recode-INFO-all --out SNP.$name-g95maf01p5
 File contains 10238 entries and 249 individuals.
 Applying Required Filters.
 Filtering sites by allele type
@@ -503,13 +509,13 @@ After filtering, kept 11120 out of a possible 12152 Sites
 
 
 #couting het
-vcftools --vcf SNP.Ccphilus-g95maf01p5.recode.vcf --het
+vcftools --vcf SNP.$name-g95maf01p5.recode.vcf --het
 t=$(cat popidHET)
 for i in $t 
 do
-  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>SNP.Ccphilus-g95maf01p5.het
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>SNP.$name-g95maf01p5.het
 done
-paste popidHET SNP.Ccphilus-g95maf01p5.het
+paste popidHET SNP.$name-g95maf01p5.het
 
 CA_KD   Average HET 0.516609
 CA_KT   Average HET 0.49038
@@ -525,7 +531,7 @@ VN_DT   Average HET 0.500953
 
 ln ../../scripts/filter_hwe_by_pop.pl
 #perl filter_hwe_by_pop.pl -v SNP.Boes-g95maf01p5.recode.vcf -p popmap2.6.5 -o SNP.Boes-g95maf01p5.HWE -h 0.01
-perl filter_hwe_by_pop.pl -v SNP.Ccphilus-g95maf01p5.recode.vcf -p popmap.4.5 -o SNP.Ccphilus-g95maf01p5.HWE -h 0.01
+perl filter_hwe_by_pop.pl -v SNP.$name-g95maf01p5.recode.vcf -p popmap.4.5 -o SNP.$name-g95maf01p5.HWE -h 0.01
 Processing population: AG (13 inds)
 Processing population: BA (28 inds)
 Processing population: BD (30 inds)
@@ -541,13 +547,13 @@ Outputting results of HWE test for filtered loci to 'filtered.hwe'
 Kept 11062 of a possible 11120 loci (filtered 58 loci)
 
 #couting het
-vcftools --vcf SNP.Ccphilus-g95maf01p5.HWE.recode.vcf --het
+vcftools --vcf SNP.$name-g95maf01p5.HWE.recode.vcf --het
 t=$(cat popidHET)
 for i in $t 
 do
-  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>SNP.Ccphilus-g95maf01p5.HWE.het
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>SNP.$name-g95maf01p5.HWE.het
 done
-paste popidHET SNP.Ccphilus-g95maf01p5.HWE.het
+paste popidHET SNP.$name-g95maf01p5.HWE.het
 
 CA_KD   Average HET 0.532359
 CA_KT   Average HET 0.506179
@@ -562,7 +568,7 @@ VN_CT   Average HET 0.515103
 VN_DT   Average HET 0.516326
 
 #vcftools --vcf SNP.Boes-g95maf01p5.HWE.recode.vcf --min-alleles 2 --max-alleles 2 --recode --recode-INFO-all --out SNP.Boes-g95maf01p5.HWE.all2
-vcftools --vcf SNP.Ccphilus-g95maf01p5.HWE.recode.vcf --min-alleles 2 --max-alleles 2 --recode --recode-INFO-all --out SNP.Ccphilus-g95maf01p5.HWE.all2
+vcftools --vcf SNP.$name-g95maf01p5.HWE.recode.vcf --min-alleles 2 --max-alleles 2 --recode --recode-INFO-all --out SNP.$name-g95maf01p5.HWE.all2
 File contains 11062 entries and 249 individuals.
 Applying Required Filters.
 Filtering sites by number of alleles
@@ -571,19 +577,19 @@ After filtering, kept 10891 out of a possible 11062 Sites
 
 
 #vcftools --vcf SNP.Boes-g95maf01p5.HWE.all2.recode.vcf --geno 0.95 --recode --recode-INFO-all --out SNP.Boes-g95maf01p5.HWE.all2g
-vcftools --vcf SNP.Ccphilus-g95maf01p5.HWE.all2.recode.vcf --max-missing 0.95 --recode --recode-INFO-all --out SNP.Ccphilus-g95maf01p5.HWE.all2g
+vcftools --vcf SNP.$name-g95maf01p5.HWE.all2.recode.vcf --max-missing 0.95 --recode --recode-INFO-all --out SNP.$name-g95maf01p5.HWE.all2g
 Filtering sites by allele frequency and call rate
 After filtering, kept 249 out of 249 Individuals
 After filtering, kept 10850 out of a possible 10891 Sites
 
 #couting het
-vcftools --vcf SNP.Ccphilus-g95maf01p5.HWE.all2g.recode.vcf --het
+vcftools --vcf SNP.$name-g95maf01p5.HWE.all2g.recode.vcf --het
 t=$(cat popidHET)
 for i in $t 
 do
-  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>SNP.Ccphilus-g95maf01p5.HWE.all2g.het
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>SNP.$name-g95maf01p5.HWE.all2g.het
 done
-paste popidHET SNP.Ccphilus-g95maf01p5.HWE.all2g.het
+paste popidHET SNP.$name-g95maf01p5.HWE.all2g.het
 
 CA_KD   Average HET 0.532663
 CA_KT   Average HET 0.506621
@@ -598,65 +604,102 @@ VN_CT   Average HET 0.515023
 VN_DT   Average HET 0.516804
 
 #remamed bam files, needed to remove .6.5 for names, created bash script
+t=$(pwd)
+cd ../mapping.April2018 
+
 ls *_*bam | awk '{print "mv "$0}' >source
-ls *_*bam | sed 's/.4.5//g' >new
+ls *_*bam | sed 's/.CUTOFF.CUTOFF2-RG.bam/-RG.bam/g' >new
 paste source new >rename
 bash rename
 
 #remamed bam.bai files, needed to remove .6.5 for names, created bash script
 ls *_*bam.bai | awk '{print "mv "$0}' >source
-ls *_*bam.bai | sed 's/.4.5//g' >new
+ls *_*bam.bai | sed 's/.CUTOFF.CUTOFF2-RG.bam.bai/-RG.bam.bai/g' >new
 paste source new >rename
 bash rename
 
-mv reference.4.5fasta eference.fasta
-cp $t/SNP.Ccphilus-g95maf01p5.HWE.all2g.recode.vcf .
+mv reference.CUTOFF.CUTOFF2.fasta reference.fasta
+cp $t/SNP.$name-g95maf01p5.HWE.all2g.recode.vcf .
 
 #perl rad_haplotyper-v1.1.5.pl -v SNP.Boes-g95maf01p5.HWE.all2g.recode.vcf -x 20 -u 10 -mp 1 -ml 10 -n -r reference.fasta -e
 
-t=$(pwd)
-cd ../mapping.April2018 
 ln ../../scripts/rad_haplotyper115HPC.pl
-perl rad_haplotyper115HPC.pl -v SNP.Ccphilus-g95maf01p5.HWE.all2g.recode.vcf -x 20 -u 10 -mp 1 -ml 10 -n -r reference.fasta -e
+perl rad_haplotyper115HPC.pl -v SNP.$name-g95maf01p5.HWE.all2g.recode.vcf -x 20 -u 10 -mp 1 -ml 10 -n -r reference.fasta -e
 
 Filtered 2416 loci below missing data cutoff
 Filtered 0 possible paralogs
 Filtered 0 loci with low coverage or genotyping errors
 Filtered 0 loci with an excess of haplotypes
 
+#Runing in sbatch because it take along time (>24h)
 #rad_haplotyper -v SNP.Boes-g95maf01p5.HWE.all2g.recode.vcf -x 16 -u 10 -mp 1 -ml 10 -n -r reference.fasta -e
-perl rad_haplotyper.pl -v SNP.Ccphilus-g95maf01p5.HWE.all2g.recode.vcf -x 20 -u 10 -mp 1 -ml 10 -n -r reference.fasta -e
+#!/bin/bash
+
+#rename files for ddocent
+#rename R1_001 F *R1_001.fastq.gz
+#rename R2_001 R *R2_001.fastq.gz
+
+#SBATCH --job-name=radhaplotyper
+#SBATCH --time=96:00:00
+#SBATCH -p normal
+#SBATCH --nodes=1
+#SBATCH --mail-user=thinhdv@ntu.edu.vn
+#SBATCH --mail-type=begin  # email me when the job starts
+#SBATCH --mail-type=end    # email me when the job finish
+
+module load ddocent/2.24
+name=Ccphilus
+
+echo -e "Dang chay radhaplotyper.pl"
+perl rad_haplotyper.pl -v SNP.$name-g95maf01p5.HWE.all2g.recode.vcf -x 20 -u 10 -mp 1 -ml 10 -n -r reference.fasta -e
 
 head stats.out
+
 Locus	Sites	Haplotypes	Inds_Haplotyped	Total_Inds	Prop_Haplotyped	Status	Poss_Paralog	Low_Cov/Geno_Err	Miss_Geno	Comment
-dDocent_Contig_100094	1	2	111	113	0.982	PASSED	0	0	2	
-dDocent_Contig_1009	1	2	112	113	0.991	PASSED	0	0	1	
-dDocent_Contig_101266	2	3	87	113	0.770	FILTERED	16	10	0	Possible paralog
-dDocent_Contig_101552	1	2	110	113	0.973	PASSED	0	0	3	
-dDocent_Contig_101986	1	2	111	113	0.982	PASSED	0	0	2	
-dDocent_Contig_103281	1	2	111	113	0.982	PASSED	0	0	2	
-dDocent_Contig_10372	1	2	111	113	0.982	PASSED	0	0	2	
-dDocent_Contig_10397	1	2	110	113	0.973	PASSED	0	0	3	
+dDocent_Contig_1	4	4	244	249	0.980	PASSED	0	0	5	
+dDocent_Contig_1002	4	5	246	249	0.988	FILTERED	2	0	1	Possible paralog
+dDocent_Contig_10025	4	5	237	249	0.952	PASSED	1	0	11	
+dDocent_Contig_10040	2	3	245	249	0.984	PASSED	0	0	4	
+dDocent_Contig_10048	1	2	244	249	0.980	PASSED	0	0	5	
+dDocent_Contig_10055	6	3	246	249	0.988	PASSED	0	0	3	
+dDocent_Contig_10092	2	3	237	249	0.952	PASSED	0	4	8	
+dDocent_Contig_10170	1	2	242	249	0.972	PASSED	0	0	7
 
 #no mawk step
+cp stats.out $t/
+cd $t
+
 grep FILTERED stats.out | cut -f1 > loci.to.remove
+ln ../../scripts/remove.bad.hap.loci.sh 
+bash remove.bad.hap.loci.sh loci.to.remove SNP.$name-g95maf01p5.HWE.all2g.recode.vcf
 
+grep -v '#' SNP.$name-g95maf01p5.HWE.all2g.filtered.vcf | wc -l
+6199
 
-
-./remove.bad.hap.loci.sh loci.to.remove SNP.Boes-g95maf01p5.HWE.all2g.recode.vcf
-
-grep -v '#' SNP.Boes-g95maf01p5.HWE.all2g.recode.vcf | wc -l
-810
-
-
-bash Filter_one_random_snp_per_contig.sh SNP.Boes-g95maf01p5.HWE.all2g.recode.vcf
+ln ../../scripts/Filter_one_random_snp_per_contig.sh
+bash Filter_one_random_snp_per_contig.sh SNP.$name-g95maf01p5.HWE.all2g.recode.vcf
 
 Filtered VCF file is saved under name SNP.Boes-g95maf01p5.HWE.all2g.filtered1SNPper.vcf
-grep -v '#' SNP.Boes-g95maf01p5.HWE.all2g.filtered1SNPper.vcf | wc -l
+grep -v '#' best.SNP.$name-g95maf01p5.HWE.all2g.filtered.vcf | wc -l
+1893
 
-638
+#couting het
+vcftools --vcf best.SNP.$name-g95maf01p5.HWE.all2g.filtered.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>best.SNP.$name-g95maf01p5.HWE.all2g.filtered.het
+done
+paste popidHET best.SNP.$name-g95maf01p5.HWE.all2g.filtered.het
 
-
-
-
-
+CA_KD	Average HET 0.575366
+CA_KT	Average HET 0.561847
+CA_SR	Average HET 0.550068
+LA_BA	Average HET 0.915135
+LA_CH	Average HET 0.558868
+TL_BD	Average HET 0.563859
+TL_LO	Average HET 0.562128
+TL_UB	Average HET 0.564279
+VN_AG	Average HET 0.571975
+VN_CT	Average HET 0.55521
+VN_DT	Average HET 0.574303
