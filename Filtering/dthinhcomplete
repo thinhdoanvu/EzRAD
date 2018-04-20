@@ -607,18 +607,18 @@ VN_DT   Average HET 0.516804
 t=$(pwd)
 cd ../mapping.April2018 
 
-ls *_*bam | awk '{print "mv "$0}' >source
-ls *_*bam | sed 's/.CUTOFF.CUTOFF2-RG.bam/-RG.bam/g' >new
+ls *.$CUTOFF.$CUTOFF2-RG.bam | awk '{print "mv "$0}' >source
+ls *.$CUTOFF.$CUTOFF2-RG.bam | cut -f1 -d "." | awk '{print $0"-RG.bam"}' >new
 paste source new >rename
 bash rename
 
 #remamed bam.bai files, needed to remove .6.5 for names, created bash script
-ls *_*bam.bai | awk '{print "mv "$0}' >source
-ls *_*bam.bai | sed 's/.CUTOFF.CUTOFF2-RG.bam.bai/-RG.bam.bai/g' >new
+ls *.$CUTOFF.$CUTOFF2-RG.bam.bai | awk '{print "mv "$0}' >source
+ls *.$CUTOFF.$CUTOFF2-RG.bam.bai | cut -f1 -d "." | awk '{print $0"-RG.bam.bai"}' >new
 paste source new >rename
 bash rename
 
-mv reference.CUTOFF.CUTOFF2.fasta reference.fasta
+mv reference.$CUTOFF.$CUTOFF2.fasta reference.fasta
 cp $t/SNP.$name-g95maf01p5.HWE.all2g.recode.vcf .
 
 #perl rad_haplotyper-v1.1.5.pl -v SNP.Boes-g95maf01p5.HWE.all2g.recode.vcf -x 20 -u 10 -mp 1 -ml 10 -n -r reference.fasta -e
