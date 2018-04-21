@@ -1,0 +1,107 @@
+What is the Holm-Bonferroni Method?
+The Holm-Bonferroni Method (also called Holm’s Sequential Bonferroni Procedure) is a way to deal with familywise error rates (FWER) 
+for multiple hypothesis tests. It is a modification of the Bonferroni correction. The Bonferroni correction reduces the possibility 
+of getting a statistically significant result (i.e. a Type I error) when performing multiple tests. Although the Bonferroni is simple 
+to calculate, it suffers from a lack of statistical power. The Holm-Bonferroni method is also fairly simple to calculate, 
+but it is more powerful than the single-step Bonferroni.
+
+Question: Use the Holm-Bonferroni method to test the following four hypotheses and their associated p-values at an alpha level of .05:
+SORT by pvalue first
+rank	pvalue
+1	0.0001
+2	0.0001
+3	0.0001
+4	0.0001
+5	0.0001
+6	0.0001
+7	0.0001
+8	0.0001
+9	0.0001
+10	0.0001
+11	0.0001
+12	0.0090
+13	0.0090
+14	0.0090
+15	0.0180
+16	0.0180
+17	0.0360
+18	0.0360
+19	0.0360
+20	0.0541
+21	0.0631
+22	0.1441
+23	0.1532
+24	0.1802
+25	0.1982
+26	0.2703
+27	0.2793
+28	0.3063
+29	0.3063
+30	0.3694
+31	0.4414
+32	0.4775
+33	0.5586
+34	0.5586
+35	0.5856
+36	0.7838
+
+Step 2: Work the Holm-Bonferroni formula for the first rank:(FDR=0.05)
+HB = Target α / (n – rank + 1)
+HB = 0.05/(36 - 1 + 1) = 0.05/36 = 0.001388889
+#EXCEL formula (O2 means 1st rank)
+=0.05/(COUNTA($P$2:$P$37)-O2+1)
+
+Step 3: Compare the first-ranked (smallest) p-value from Step 1 to the alpha level calculated in Step 2:
+Smallest p-value, in Step 1 (p1 = 0.0001) < Alpha level in Step 2 (0.001388889).
+If the p-value is smaller, reject the null hypothesis for this individual test.
+The p-value of 0.0001 is less than 0.001388889, so the null hypothesis for p1 is rejected.
+
+Step 4: Repeat the HB formula for the second rank .
+HB = Target α / (n – rank + 1)
+HB = .05 / (36 – 2 + 1) = .05 / 35 = .001428571
+#EXCEL formula (O3 is 2nd rank
+=0.05/(COUNTA($P$2:$P$37)-O3+1)
+
+Step 5: Compare the result from the HB formula in Step 4 to the second-ranked p-value: 
+Second ranked p-value, in Step 1 (p2 = .0001) < Alpha level in Step 2 (.001428571).
+The p-value of .0001 is less than .001428571, so the null hypothesis for p2 is rejected as well.
+
+Step k, k+1: repeat all steps
+
+Here are results
+0.001388889
+0.001428571
+0.001470588
+0.001515152
+0.0015625
+0.001612903
+0.001666667
+0.001724138
+0.001785714
+0.001851852
+0.001923077
+0.002
+0.002083333
+0.002173913
+0.002272727
+0.002380952
+0.0025
+0.002631579
+0.002777778
+0.002941176
+0.003125
+0.003333333
+0.003571429
+0.003846154
+0.004166667
+0.004545455
+0.005
+0.005555556
+0.00625
+0.007142857
+0.008333333
+0.01
+0.0125
+0.016666667
+0.025
+0.05
