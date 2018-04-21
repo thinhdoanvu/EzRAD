@@ -1,0 +1,100 @@
+Buoc 0. Convert vcf - strcuture
+File popmap nho doi cot thu 2 thanh cac con so 1 2 3 ... theo y muon sap xep thanh tung group lien ke de thuan tien cho viec doc ket qua sau nay
+
+Buoc 1. Copy 2 file mainparams va extraparams den thu muc can thuc hien
+Buoc 2. Edit file mainparams sao cho Input va Output dung duong dan
+	#define OUTFILE /work/vietnam/dthinh/Polynemeus_FINAL/Outlier/Only21Loci/Structure/hpc/50000100000/Results/50000100000_run_12
+	#define INFILE /work/vietnam/dthinh/Polynemeus_FINAL/Outlier/Only21Loci/Structure/hpc/project_data
+Buoc 3. Chinh sua populations hien co tren project_data
+	Chinh sua so loci va so individuals cho phu hop keo loi
+	#define NUMINDS 219
+	#define NUMLOCI 471
+	#define MAXPOPS 8
+
+Buoc 4. Chinh sua so populations cho K.txt (toi da la 8 doi voi ca Phen dang lam) va so lan rep.txt (co the la 30 - OK)
+	seq 2 8 > K.txt
+	seq 1 30 > rep.txt
+
+Buoc 5. Copy file project_data den thu muc can thuc hien tren Server se bao loi the nay:
+#Reading file "mainparams".
+#datafile is
+#/work/vietnam/dthinh/Polynemeus_FINAL/Outlier/Only21Loci/Structure/Population/project_data
+#Reading file "extraparams".
+#Error in command-line data entry for MAXPOPS
+#Value input at command line is {1}
+#Exiting the program due to error(s) listed above.
+
+Ly do: 
+cat -e project_data | more
+AG_10   1       4 1 4 4 1 -9 4 3 1 4 2 -9 2 4 3 4 3 -9 3 4 -9^M$
+AG_10   1       4 1 4 4 1 -9 4 3 1 4 2 -9 2 4 3 4 3 -9 3 4 -9^M$
+AG_11   1       -9 1 -9 4 -9 -9 4 3 -9 4 -9 -9 -9 4 3 4 -9 4 3 -9 -9^M$
+AG_11   1       -9 1 -9 4 -9 -9 4 3 -9 4 -9 -9 -9 4 3 4 -9 4 3 -9 -9^M$
+
+Con neu mo file duoc tao tu Xming Server cua phan mem Structure chay bang JAVA truc tiep tu Server se the nay day:
+cat -e project_data_xming | more
+AG_10   1       4 1 4 4 1 -9 4 3 1 4 2 -9 2 4 3 4 3 -9 3 4 -9$
+AG_10   1       4 1 4 4 1 -9 4 3 1 4 2 -9 2 4 3 4 3 -9 3 4 -9$
+AG_11   1       -9 1 -9 4 -9 -9 4 3 -9 4 -9 -9 -9 4 3 4 -9 4 3 -9 -9$
+AG_11   1       -9 1 -9 4 -9 -9 4 3 -9 4 -9 -9 -9 4 3 4 -9 4 3 -9 -9$
+
+Nen nhin bang mat thuong se khong thay gi ca. Tuy nhien neu dung lenh diff hoac sdiff se thay ngay va luon:
+Do vay:
+
+Buoc 6. Thuc hien file dos2unix.sh de chuyen du lieu tu dang DOS sang UNIX
+
+Buoc 9. Thuc hien file structure.sh (sbatch structure.sh)
+
+Buoc 10. zip folder Results
+Buoc 11. Su dung Structure Harvester de test optimal K
+Hoac
+Co the thuc hien structurehaverter.py truc tiep tu Sever sau do su dung EXCEL de tim MAX Ln(K) hoac Delta(K)
+????
+##########################
+#define BURNIN 50000
+#define NUMREPS 100000
+----CO VE LA TOT NHAT
+
+@@@@@@@@@@@@@@@@@@@THUC HIEN CLUMPP DE VE DO THI TRONG DISTRUCT@@@@@@@@@@@@@@
+1. Copy file K_optimal.indfile va file K_optimal.popfile sau khi su dung structure harverster.
+Vi du trong truong hop nay la 4
+2. Chinh sua file parmfile voi cac thong so sau:
+  2.1. K 4 # Number of clusters.(FILE MINH DANG SU DUNG CO K=?)
+  2.2. C 7 # Number of individuals or populations. (POPID=7)
+  2.3. R 30# Number of runs.Khi ma chay bang STRUCTURE, gia trị Iteration K=30
+3. ./CLUMPP (server) hoac Double click clumpp.exe
+Ket qua: Minh se co dau ra la file: K3.perm_datafile
+
+!!!!!!!!!!!!!!!!!!!THUC HIEN DISTRUCT DE VE DO THI!!!!!!!!!!!!!!!!!!!!!!!!!!
+1. Copy file K_optimal.indfile - sua ten file thanh K_optimal.indivq
+2. Copy file K_optimal.perm_datafile thanh K_optimal.popq
+
+3. Tong so Individual = 172. Nen o 2 file tren, xoa tat ca cac hang sau 172 tro di.
+
+4. Edit file drawparmfile voi cac thong so sau:
+  4.1. #define INFILE_POPQ K_optimal.popq      // (str) input file of population q's
+  4.2. #define INFILE_INDIVQ K_optimal.indivq    // (str) input file of individual q's
+  4.3. #define INFILE_LABEL_BELOW K_optimal.names     // (str) input file of labels for below figure
+  4.4. //#define INFILE_LABEL_ATOP K_optimal.languages // (str) input file of labels for atop figure
+  4.5. #define INFILE_CLUST_PERM K_optimal.perm     // (str) input file of permutation of clusters to print  
+  4.6. #define OUTFILE K_optimal.ps       //(str) name of output file
+  4.7. #define K optimal    // (int) number of clusters	
+  4.8. #define NUMPOPS 7    // (int) number of pre-defined populations
+  4.9. #define NUMINDS 172  // (int) number of individuals
+  
+5. Edit K_optimal.names
+1 SimRiep
+2 AnGiang
+3 CanTho
+4 DongThap
+5 SocTrang
+6 TraVinh
+7 VinhLong
+
+6. Edit K_optimal.perm
+1 Red
+2 Green
+3 Blue
+4 Blue_Purple
+
+7. RUN Doubleclick distruct.exe
