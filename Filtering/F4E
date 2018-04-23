@@ -1,0 +1,987 @@
+#!/bin/bash
+module load vcftools/0.1.15
+module load vcflib/1.0
+module load parallel/20180122
+
+cp ../mapping/raw.6.5.vcf/Final90.6.5.recode.vcf .
+
+CUTOFF=4
+CUTOFF2=5
+
+nano BH.remove
+INDV
+LA_BA01
+LA_BA02
+LA_BA03
+LA_BA04
+LA_BA05
+LA_BA06
+LA_BA07
+LA_BA08
+LA_BA09
+LA_BA10
+LA_BA11
+LA_BA12
+LA_BA13
+LA_BA14
+LA_BA15
+LA_BA16
+LA_BA17
+LA_BA18
+LA_BA19
+LA_BA20
+LA_BA21
+LA_BA22
+LA_BA23
+LA_BA24
+LA_BA25
+LA_BA26
+LA_BA27
+LA_BA28
+LA_BA29
+LA_BA30
+
+#remove quan the BANHAT ra tuoc khi thuc hien vi qua nhieu lan test BANHAT co HET qua thap
+vcftools --vcf Final90.recode.$CUTOFF.$CUTOFF2.vcf --remove BH.remove --recode --recode-INFO-all --out BH.remove
+After filtering, kept 271 out of 301 Individuals
+After filtering, kept 180783 out of a possible 180783 Sites
+
+grep CHROM BH.remove.recode.vcf | cut -f10- | tr '\t' '\n' > popRMI
+awk '{print substr($0,1,5)}' popRMI | uniq  > popidHET
+
+
+#maf
+vcftools --vcf BH.remove.recode.vcf --maf 0.01 --recode --recode-INFO-all --out af001
+After filtering, kept 271 out of 271 Individuals
+After filtering, kept 70049 out of a possible 180783 Sites
+
+
+#counting het
+vcftools --vcf af001.recode.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>af001.het
+done
+paste popidHET af001.het
+
+CA_KD   Average HET -0.104756
+CA_KT   Average HET -0.0569109
+CA_SR   Average HET 0.115523
+LA_CH   Average HET 0.0356622
+TL_BD   Average HET -0.0324131
+TL_LO   Average HET -0.149038
+TL_UB   Average HET -0.153661
+VN_AG   Average HET 0.0126159
+VN_CT   Average HET 0.240478
+VN_DT   Average HET -0.120383
+
+#dp
+dp=5
+vcftools --vcf af001.recode.vcf --min-meanDP $dp --recode --recode-INFO-all --out dp5
+After filtering, kept 271 out of 271 Individuals
+After filtering, kept 69919 out of a possible 70049 Sites
+
+
+#counting het
+vcftools --vcf dp5.recode.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>dp5.het
+done
+paste popidHET dp5.het
+
+CA_KD   Average HET -0.105235
+CA_KT   Average HET -0.0572184
+CA_SR   Average HET 0.115479
+LA_CH   Average HET 0.0353072
+TL_BD   Average HET -0.0328425
+TL_LO   Average HET -0.149061
+TL_UB   Average HET -0.153638
+VN_AG   Average HET 0.0120629
+VN_CT   Average HET 0.240502
+VN_DT   Average HET -0.120963
+
+
+#######################################################################
+#loai bo indel
+vcftools --vcf dp5.recode.vcf --remove-indels --recode --recode-INFO-all --out indel
+After filtering, kept 271 out of 271 Individuals
+After filtering, kept 46932 out of a possible 69919 Sites
+
+
+#counting het
+vcftools --vcf indel.recode.vcf  --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>indel.het
+done
+paste popidHET indel.het
+
+CA_KD   Average HET -0.0855013
+CA_KT   Average HET -0.0483075
+CA_SR   Average HET 0.126795
+LA_CH   Average HET 0.0405972
+TL_BD   Average HET -0.0271075
+TL_LO   Average HET -0.123389
+TL_UB   Average HET -0.133585
+VN_AG   Average HET 0.0213906
+VN_CT   Average HET 0.259968
+VN_DT   Average HET -0.100358
+
+
+#saf
+vcffilter -f "SAF / SAR > 100 & SRF / SRR > 100 | SAR / SAF > 100 & SRR / SRF > 100" -s indel.recode.vcf > saf.vcf
+awk '!/#/' saf.vcf | wc -l
+28592
+
+#counting het
+vcftools --vcf saf.vcf  --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>saf.het
+done
+paste popidHET saf.het
+
+CA_KD   Average HET -0.0260623
+CA_KT   Average HET -0.0245606
+CA_SR   Average HET 0.205029
+LA_CH   Average HET 0.112278
+TL_BD   Average HET -0.00982344
+TL_LO   Average HET -0.0517617
+TL_UB   Average HET -0.0588772
+VN_AG   Average HET 0.0687606
+VN_CT   Average HET 0.348321
+VN_DT   Average HET -0.0259584
+
+
+#mqm
+vcffilter -f "MQM / MQMR > 0.95 & MQM / MQMR < 1.05" saf.vcf > mqm.vcf
+grep -v '#' mqm.vcf | wc -l
+24887
+
+#counting het
+vcftools --vcf mqm.vcf  --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>mqm.het
+done
+paste popidHET mqm.het
+
+CA_KD   Average HET 0.0166819
+CA_KT   Average HET 0.0034875
+CA_SR   Average HET 0.21842
+LA_CH   Average HET 0.123203
+TL_BD   Average HET 0.0165047
+TL_LO   Average HET -0.014175
+TL_UB   Average HET -0.0198328
+VN_AG   Average HET 0.0942453
+VN_CT   Average HET 0.375169
+VN_DT   Average HET 0.0156481
+
+
+#LOC AB
+vcffilter -f "AB >0.25 & AB <0.75 | AB <0.01" mqm.vcf > ab.vcf
+grep -v '#' ab.vcf | wc -l
+21134
+
+#counting het
+vcftools --vcf ab.vcf  --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>ab.het
+done
+paste popidHET ab.het
+
+
+CA_KD   Average HET 0.0885197
+CA_KT   Average HET 0.0361116
+CA_SR   Average HET 0.245459
+LA_CH   Average HET 0.14688
+TL_BD   Average HET 0.0482206
+TL_LO   Average HET 0.0203192
+TL_UB   Average HET 0.0193091
+VN_AG   Average HET 0.126314
+VN_CT   Average HET 0.418324
+VN_DT   Average HET 0.0556062
+
+
+#Q40 - Q30
+vcftools --vcf ab.vcf --minQ 30 --recode --recode-INFO-all --out Q30
+After filtering, kept 271 out of 271 Individuals
+After filtering, kept 21134 out of a possible 21134 Sites
+
+
+#counting het
+vcftools --vcf Q30.recode.vcf  --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>Q30.het
+done
+paste popidHET Q30.het
+
+CA_KD   Average HET 0.0885197
+CA_KT   Average HET 0.0361116
+CA_SR   Average HET 0.245459
+LA_CH   Average HET 0.14688
+TL_BD   Average HET 0.0482206
+TL_LO   Average HET 0.0203192
+TL_UB   Average HET 0.0193091
+VN_AG   Average HET 0.126314
+VN_CT   Average HET 0.418324
+VN_DT   Average HET 0.0556062
+
+
+
+#prim
+vcfallelicprimitives Q30.recode.vcf --keep-info --keep-geno > prim.vcf
+vcftools --vcf prim.vcf --remove-indels --recode --recode-INFO-all --out prim.indel
+vcftools --vcf prim.indel.recode.vcf --min-alleles 2 --max-alleles 2 --recode --recode-INFO-all --out prim.indel.2
+After filtering, kept 271 out of 271 Individuals
+After filtering, kept 20955 out of a possible 21134 Sites
+
+
+#counting het
+vcftools --vcf prim.indel.2.recode.vcf  --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>prim.het
+done
+paste popidHET prim.het
+
+CA_KD   Average HET 0.0885197
+CA_KT   Average HET 0.0361116
+CA_SR   Average HET 0.245459
+LA_CH   Average HET 0.14688
+TL_BD   Average HET 0.0482206
+TL_LO   Average HET 0.0203192
+TL_UB   Average HET 0.0193091
+VN_AG   Average HET 0.126314
+VN_CT   Average HET 0.418324
+VN_DT   Average HET 0.0556062
+
+######################################################
+
+vcftools --vcf prim.indel.2.recode.vcf --missing-indv
+
+grep -v 'IN' out.imiss | cut -f5 > totalmissing
+gnuplot
+set terminal dumb size 120, 30
+set autoscale 
+unset label
+set title "Histogram of % missing data per individual"
+set ylabel "Number of Occurrences"
+set xlabel "% of missing data"
+#set yr [0:100000]
+binwidth=0.01
+bin(x,width)=width*floor(x/width) + binwidth/2.0
+plot 'totalmissing' using (bin($1,binwidth)):(1.0) smooth freq with boxes
+exit
+
+                                         Histogram of % missing data per individual
+  Number of Occurrences
+    180 ++--------+---------+---------+---------+---------+--------+---------+---------+---------+---------+--------++
+        **        +         +         +         +         +     'totalmissing' using (bin($1,binwidth)):(1.0) ****** +
+        **                                                                                                           |
+    160 **                                                                                                          ++
+        **                                                                                                           |
+    140 **                                                                                                          ++
+        **                                                                                                           |
+        **                                                                                                           |
+    120 **                                                                                                          ++
+        **                                                                                                           |
+        **                                                                                                           |
+    100 **                                                                                                          ++
+        **                                                                                                           |
+     80 **                                                                                                          ++
+        **                                                                                                           |
+        **                                                                                                           |
+     60 **                                                                                                          ++
+        **                                                                                                           |
+        **                                                                                                           |
+     40 **                                                                                                          ++
+        **                                                                                                           |
+     20 ****                                                                                                        ++
+        ****                                                                                                         |
+        ********  +         +         +         +         +        +         +         +         +        **         +
+      0 *****************************************************************************************************-------++
+        0        0.1       0.2       0.3       0.4       0.5      0.6       0.7       0.8       0.9        1        1.1
+                                                      % of missing data
+
+
+awk '$5 > 0.3' out.imiss | cut -f1 > lowDP.indv
+nano lowDP.indv
+
+vcftools --vcf prim.indel.2.recode.vcf --remove lowDP.indv --recode --recode-INFO-all --out rmind
+After filtering, kept 251 out of 271 Individuals
+After filtering, kept 20955 out of a possible 20955 Sites
+
+#make goup ID
+grep CHROM rmind.recode.vcf | cut -f10- | tr '\t' '\n' > popRMI
+awk '{print substr($0,1,5)}' popRMI | uniq  > popidHET
+
+#counting het
+vcftools --vcf rmind.recode.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>rmind.het
+done
+paste popidHET rmind.het
+
+CA_KD   Average HET 0.08593
+CA_KT   Average HET 0.00726677
+CA_SR   Average HET 0.11529
+LA_CH   Average HET 0.0599296
+TL_BD   Average HET -0.015286
+TL_LO   Average HET 0.0175267
+TL_UB   Average HET 0.0165138
+VN_AG   Average HET 0.0739037
+VN_CT   Average HET 0.231811
+VN_DT   Average HET 0.0529138
+
+
+#qual/dp
+#QUAL / DP < 0.1 <<< thi het cang co nhieu gia tri <0
+#QUAL / DP >0.75 .5 .1 >>> thi HET <<<
+vcffilter -f "QUAL / DP > 0.75" rmind.recode.vcf > fil.vcf
+vcftools --vcf fil.vcf --site-quality
+cut -f3 out.lqual > qual.depth
+grep -v 'D' qual.depth | awk -v x=251 '{print $1/x}' > meanqualsite
+#x=individuals numbers
+
+gnuplot
+set terminal dumb size 120, 30
+set autoscale
+set xrange [05:150] 
+unset label
+set title "Histogram of mean quality per site"
+set ylabel "Number of Occurrences"
+set xlabel "Mean Quality"
+binwidth=1
+bin(x,width)=width*floor(x/width) + binwidth/2.0
+set xtics 5
+plot 'meanqualsite' using (bin($1,binwidth)):(1.0) smooth freq with boxes
+exit
+
+                                             Histogram of mean quality per site
+  Number of Occurrences
+    300 ++--+---+--+---+---+---+--+---+---+---+--+---+---+---+--+---+---+---+--+---+---+---+--+---+---+---+--+---+--++
+        +   +   *  +   +   +   +  +   +   +   +  +   +   +   +  'meanqualsite' using (bin($1,binwidth)):(1.0)+****** +
+        |       *                                                                                                    |
+        |      ***                                                                                                   |
+    250 ++     *****  *                                                                                             ++
+        |     *********                                                                                              |
+        |     *********                                                                                              |
+        |    **********                                                                                              |
+    200 ++   ************                                                                                           ++
+        |    *************                                                                                           |
+        |    *************                                                                                           |
+        |    **************                                                                                          |
+    150 ++   **************** **                                                                                    ++
+        |    *******************                                                                                     |
+        |    ******************* **     **                                                                           |
+        |    ************************  ***                                                                           |
+    100 ++  ******************************                                                                          ++
+        |   ******************************  **                                                                       |
+        |   *************************************** **                                                               |
+        |  ********************************************* ****                                                        |
+     50 ++ ****************************************************** ****   **      **                                 ++
+        |  ****************************************************************** ***********     ****   ***             |
+        | ************************************************************************************************************
+        + ************************************************************************************************************
+      0 **************************************************************************************************************
+        5   10  15 20  25  30  35 40  45  50  55 60  65  70  75 80  85  90  95100 105 110 115120 125 130 135140 145 150
+                                                        Mean Quality
+
+paste out.lqual meanqualsite | awk -v x=150 '$4>x' | awk '{print $1"\t"$2}' > rmqual.site
+#Col1: Contigs
+#Col2: Positoion
+#meanqualsite >>> thi HET <<<
+vcftools --vcf fil.vcf --exclude-positions rmqual.site --recode --recode-INFO-all --out meanqual
+After filtering, kept 251 out of 251 Individuals
+After filtering, kept 10553 out of a possible 13339 Sites
+
+
+#counting het
+vcftools --vcf meanqual.recode.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>meanqual.het
+done
+paste popidHET meanqual.het
+
+CA_KD   Average HET 0.170427
+CA_KT   Average HET 0.0461945
+CA_SR   Average HET 0.163284
+LA_CH   Average HET 0.107913
+TL_BD   Average HET 0.028917
+TL_LO   Average HET 0.0655992
+TL_UB   Average HET 0.0672859
+VN_AG   Average HET 0.12505
+VN_CT   Average HET 0.289716
+VN_DT   Average HET 0.106638
+
+
+#maxdp
+cut -f8  meanqual.recode.vcf | grep -oe "DP=[0-9]*" | sed -s 's/DP=//g' > fil.depth
+grep -v '#' fil.vcf | cut -f1,2,6 > fil.loci.qual
+awk '{ sum += $1; n++ } END { if (n > 0) print sum / n; }' fil.depth
+4298.79
+python -c "print int(4299+3*(4299**0.5))"
+4495
+
+paste fil.loci.qual fil.depth | awk -v x=4495 '$4 > x' | awk '$3 < 2 * $4' > fil.lowQDloci
+vcftools --vcf meanqual.recode.vcf --site-depth --exclude-positions fil.lowQDloci --out fil
+cut -f3 fil.ldepth > fil.site.depth
+grep -v 'D' fil.site.depth | awk -v x=251 '{print $1/x}' > meandepthpersite
+#x=individuals numbers
+
+gnuplot
+set terminal dumb size 120, 30
+set autoscale
+set xrange [05:150] 
+unset label
+set title "Histogram of mean depth per site"
+set ylabel "Number of Occurrences"
+set xlabel "Mean Depth"
+binwidth=1
+bin(x,width)=width*floor(x/width) + binwidth/2.0
+set xtics 5
+plot 'meandepthpersite' using (bin($1,binwidth)):(1.0) smooth freq with boxes
+exit
+
+                                               Histogram of mean depth per site
+  Number of Occurrences
+    1200 ++--+--+---+---+---+--+---+---+---+--+---+---+--+---+---+---+--+---+---+--+---+---+---+--+---+---+---+--+--++
+         +   +  +   +   +   +  +   +   +   +  +   +   +  +  'meandepthpersite' using (bin($1,binwidth)):(1.0) ****** +
+         |                                                                                                           |
+         |     ***                                                                                                   |
+    1000 ++   ****                                                                                                  ++
+         |    ****                                                                                                   |
+         |    ****                                                                                                   |
+         |    ****                                                                                                   |
+     800 ++  ******                                                                                                 ++
+         |   ******                                                                                                  |
+         |   ******                                                                                                  |
+         |   *******                                                                                                 |
+     600 ++  *******                                                                                                ++
+         |   *******                                                                                                 |
+         |   *******                                                                                                 |
+         |   *******                                                                                                 |
+     400 ++  *******                                                                                                ++
+         |   *******                                                                                                 |
+         |  *********                                                                                                |
+         |  *********                                                                                                |
+     200 ++ *********                                                                                               ++
+         | ***********                                                                                               |
+         | ************                                                                                              |
+         +***************   +  +   +   +   +  +   +   +  +   +   +   +  +   +   +  +   +   +   +  +   +   +   +  +   +
+       0 +*******************************************************************---+--+---+---+---+--+---+---+---+--+--++
+         5   10 15  20  25  30 35  40  45  50 55  60  65 70  75  80  85 90  95 100105 110 115 120125 130 135 140145 150
+                                                          Mean Depth
+
+vcftools --vcf meanqual.recode.vcf --recode --recode-INFO-all --max-meanDP 30 --exclude-positions fil.lowQDloci --out maxDP
+#max-meanDP cuc tri ben phai >>> thi HET <<<
+After filtering, kept 251 out of 251 Individuals
+After filtering, kept 8863 out of a possible 10553 Sites
+
+
+#counting het
+vcftools --vcf maxDP.recode.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>maxDP.het
+done
+paste popidHET maxDP.het
+
+CA_KD   Average HET 0.168878
+CA_KT   Average HET 0.0440068
+CA_SR   Average HET 0.166049
+LA_CH   Average HET 0.106206
+TL_BD   Average HET 0.0293837
+TL_LO   Average HET 0.0658692
+TL_UB   Average HET 0.06844
+VN_AG   Average HET 0.125433
+VN_CT   Average HET 0.292789
+VN_DT   Average HET 0.105998
+
+
+#HET reality
+vcffilter -f "PAIRED > 0.05 & PAIREDR > 0.05 & PAIREDR / PAIRED < 1.75 & PAIREDR / PAIRED > 0.05 | PAIRED < 0.05 & PAIREDR < 0.05" -s maxDP.recode.vcf > pair.vcf
+grep -v '#' pair.vcf | wc -l
+8826
+
+#counting het
+vcftools --vcf pair.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>pair.het
+done
+paste popidHET pair.het
+
+CA_KD   Average HET 0.169176
+CA_KT   Average HET 0.0440655
+CA_SR   Average HET 0.168748
+LA_CH   Average HET 0.108212
+TL_BD   Average HET 0.0297683
+TL_LO   Average HET 0.0660758
+TL_UB   Average HET 0.0690347
+VN_AG   Average HET 0.125968
+VN_CT   Average HET 0.295367
+VN_DT   Average HET 0.1064
+
+
+#af 0.05
+vcftools --vcf pair.vcf --maf 0.05 --recode --recode-INFO-all --out af005
+After filtering, kept 251 out of 251 Individuals
+After filtering, kept 7039 out of a possible 8826 Sites
+
+#counting het
+vcftools --vcf af005.recode.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>af005.het
+done
+paste popidHET af005.het
+
+CA_KD   Average HET 0.170267
+CA_KT   Average HET 0.0483597
+CA_SR   Average HET 0.164139
+LA_CH   Average HET 0.102635
+TL_BD   Average HET 0.0284243
+TL_LO   Average HET 0.0611275
+TL_UB   Average HET 0.0678394
+VN_AG   Average HET 0.124761
+VN_CT   Average HET 0.29057
+VN_DT   Average HET 0.100974
+
+
+#hardy-weinberg
+vcftools --vcf af005.recode.vcf --hardy
+awk -v x=0.1 '$6<x' out.hwe | awk '{print $1"\t"$2}' | awk '!/POS/' > hardy.site
+vcftools --vcf af005.recode.vcf --exclude-positions hardy.site --recode --recode-INFO-all --out hardy
+After filtering, kept 251 out of 251 Individuals
+After filtering, kept 3820 out of a possible 7039 Sites
+
+
+#counting het
+vcftools --vcf hardy.recode.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>hardy.het
+done
+paste popidHET hardy.het
+
+CA_KD   Average HET 0.108946
+CA_KT   Average HET -0.00872613
+CA_SR   Average HET 0.10107
+LA_CH   Average HET 0.0357096
+TL_BD   Average HET -0.0295373
+TL_LO   Average HET 0.00623083
+TL_UB   Average HET 0.00722344
+VN_AG   Average HET 0.0547319
+VN_CT   Average HET 0.227262
+VN_DT   Average HET 0.0366566
+
+
+#max-missing 
+vcftools --vcf hardy.recode.vcf --max-missing 0.95 --recode --recode-INFO-all --out geno95
+After filtering, kept 251 out of 251 Individuals
+After filtering, kept 3785 out of a possible 3820 Sites
+
+
+#counting het
+vcftools --vcf geno95.recode.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>geno95.het
+done
+paste popidHET geno95.het
+
+CA_KD   Average HET 0.108753
+CA_KT   Average HET -0.0081429
+CA_SR   Average HET 0.101122
+LA_CH   Average HET 0.0363
+TL_BD   Average HET -0.0292317
+TL_LO   Average HET 0.004225
+TL_UB   Average HET 0.005745
+VN_AG   Average HET 0.0547256
+VN_CT   Average HET 0.22654
+VN_DT   Average HET 0.0359222
+
+
+#Graph Individuals with HET >
+cut -f5 out.het > loci.het
+gnuplot << \EOF
+set terminal dumb size 120, 30
+set autoscale 
+unset label
+set title "Frequency of Ho,He per loci"
+set ylabel "Number of Occurrences"
+set xlabel "% of Ho_He"
+#set yr [0:100000]
+binwidth=0.01
+bin(x,width)=width*floor(x/width) + binwidth/2.0
+plot 'loci.het' using (bin($1,binwidth)):(1.0) smooth freq with boxes
+pause -1
+EOF
+
+                                                 Frequency of Ho,He per loci
+  Number of Occurrences
+    20 ++----------+-----------+------------+-----------+-----------+-----------+------------+-----------+----------++
+       +           +           +            +         **+           'loci.het' using (bin($1,binwidth)):(1.0) ****** +
+    18 ++                                             **                                                            ++
+       |                                              **                                                             |
+       |                                              **                                                             |
+    16 ++                                             ***                                                           ++
+       |                                             *****                                                           |
+    14 ++                                            *****                                                          ++
+       |                                             *****                                                           |
+       |                                             *****                                                           |
+    12 ++                                            *******                                                        ++
+       |                                             *******                                                         |
+    10 ++                                           ********                                                        ++
+       |                                            ********                                                         |
+     8 ++                                           ********                                                        ++
+       |                                            ********                                                         |
+       |                                            **********                                                       |
+     6 ++                                          ************                                                     ++
+       |                                           **************                                                    |
+     4 ++                                         ****************                                                  ++
+       |                                          ****************  **   ***   **                                    |
+       |                                          ****************  **   * *   **                                    |
+     2 ++                                       ************************ * * ****                                   ++
+       +     ************************************ ************************ ***************************************** +
+     0 ++----*******************************************************************************************************++
+     -0.8        -0.6        -0.4         -0.2          0          0.2         0.4          0.6         0.8          1
+                                                         % of Ho_He
+
+#LOC CIGAR = 1X - chi quan tam den viec thay the tung Allele
+#+ missing loci percentage
+awk '/#/'  geno95.recode.vcf > cigar.vcf
+grep -w "CIGAR=1X" geno95.recode.vcf >> cigar.vcf
+awk '!/#/' cigar.vcf | wc -l
+3785
+
+grep CHROM cigar.vcf | cut -f10- | tr '\t' '\n' > popRMI
+awk '{print substr($0,4,2)}' popRMI > popidRMI
+paste popRMI popidRMI > popmap.$CUTOFF.$CUTOFF2
+
+uniq popidRMI > popid_uniqRMI
+t=$(cat popid_uniqRMI)
+for i in $t
+do
+  grep -w $i popmap.$CUTOFF.$CUTOFF2 > $i.keep
+done
+
+ls *keep | sed 's/.keep//g' | parallel 'vcftools --vcf cigar.vcf --keep {}.keep --missing-site --out {}'
+
+AG=16
+BD=30
+CH=28
+CT=12
+DT=32
+KD=31
+KT=31
+LO=12
+SR=27
+UB=32
+
+if [ -f all.badlociRMI ]
+then
+  rm all.badlociRMI
+fi
+
+cat *.lmiss | awk '!/CHR/' >> all.badlociRMI
+
+cut -f6 all.badlociRMI > missing.lociRMI
+gnuplot << \EOF
+set terminal dumb size 120, 30
+set autoscale 
+unset label
+set title "Histogram of % missing data per loci"
+set ylabel "Number of Occurrences"
+set xlabel "% of missing data"
+#set yr [0:100000]
+binwidth=0.01
+bin(x,width)=width*floor(x/width) + binwidth/2.0
+plot 'missing.lociRMI' using (bin($1,binwidth)):(1.0) smooth freq with boxes
+pause -1
+EOF
+
+                                             Histogram of % missing data per loci
+  Number of Occurrences
+    30000 ++----------------+-----------------+-----------------+----------------+-----------------+----------------++
+          *****             +                 +              'missing.lociRMI' using (bin($1,binwidth)):(1.0) ****** +
+          *   *                                                                                                      |
+          *   *                                                                                                      |
+    25000 *+  *                                                                                                     ++
+          *   *                                                                                                      |
+          *   *                                                                                                      |
+          *   *                                                                                                      |
+    20000 *+  *                                                                                                     ++
+          *   *                                                                                                      |
+          *   *                                                                                                      |
+          *   *                                                                                                      |
+    15000 *+  *                                                                                                     ++
+          *   *                                                                                                      |
+          *   *                                                                                                      |
+          *   *                                                                                                      |
+    10000 *+  *                                                                                                     ++
+          *   *                                                                                                      |
+          *   *                                                                                                      |
+          *   *                                                                                                      |
+     5000 *+  ******                                                                                                ++
+          *   *    *                                                                                                 |
+          *   *    *                                                                                                 |
+          *   *    ******** +                 +                 +                +                 +                 +
+        0 ************************************************************************************************************
+          0                0.1               0.2               0.3              0.4               0.5               0.6
+                                                       % of missing data
+
+
+awk '$6 > 0.1' all.badlociRMI | cut -f1,2 > bad.lociRMI
+vcftools --vcf cigar.vcf --exclude-positions bad.lociRMI --recode --recode-INFO-all --out badlocirm
+After filtering, kept 251 out of 251 Individuals
+After filtering, kept 2595 out of a possible 3785 Sites
+
+#counting het
+vcftools --vcf badlocirm.recode.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>badlocirm.het
+done
+paste popidHET badlocirm.het
+
+CA_KD   Average HET 0.106338
+CA_KT   Average HET 0.00309806
+CA_SR   Average HET 0.0874911
+LA_CH   Average HET 0.0257329
+TL_BD   Average HET -0.0261143
+TL_LO   Average HET -0.00337667
+TL_UB   Average HET 0.00503937
+VN_AG   Average HET 0.0443219
+VN_CT   Average HET 0.192425
+VN_DT   Average HET 0.0322631
+
+ln ../../scripts/filter_hwe_by_pop.pl
+perl filter_hwe_by_pop.pl -v badlocirm.recode.vcf -p popmap.$CUTOFF.$CUTOFF2 -o HWE -h 0.01
+Processing population: AG (16 inds)
+Processing population: BD (30 inds)
+Processing population: CH (28 inds)
+Processing population: CT (12 inds)
+Processing population: DT (32 inds)
+Processing population: KD (31 inds)
+Processing population: KT (31 inds)
+Processing population: LO (12 inds)
+Processing population: SR (27 inds)
+Processing population: UB (32 inds)
+
+Outputting results of HWE test for filtered loci to 'filtered.hwe'
+Kept 2595 of a possible 2595 loci (filtered 0 loci)
+
+#counting het
+vcftools --vcf HWE.recode.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>HWE.het
+done
+paste popidHET HWE.het
+
+CA_KD   Average HET 0.106338
+CA_KT   Average HET 0.00309806
+CA_SR   Average HET 0.0874911
+LA_CH   Average HET 0.0257329
+TL_BD   Average HET -0.0261143
+TL_LO   Average HET -0.00337667
+TL_UB   Average HET 0.00503937
+VN_AG   Average HET 0.0443219
+VN_CT   Average HET 0.192425
+VN_DT   Average HET 0.0322631
+
+
+t=$(pwd)
+cd ../mapping.April2018
+
+#remamed bam files, needed to remove .6.5 for names, created bash script
+t=$(pwd)
+cd ../mapping.April2018 
+
+ls *.$CUTOFF.$CUTOFF2-RG.bam | awk '{print "mv "$0}' >source
+ls *.$CUTOFF.$CUTOFF2-RG.bam | cut -f1 -d "." | awk '{print $0"-RG.bam"}' >new
+paste source new >rename
+#bash rename
+
+#remamed bam.bai files, needed to remove .6.5 for names, created bash script
+ls *.$CUTOFF.$CUTOFF2-RG.bam.bai | awk '{print "mv "$0}' >source
+ls *.$CUTOFF.$CUTOFF2-RG.bam.bai | cut -f1 -d "." | awk '{print $0"-RG.bam.bai"}' >new
+paste source new >rename
+#bash rename
+
+mv reference.$CUTOFF.$CUTOFF2.fasta reference.fasta
+
+ln ../../scripts/rad_haplotyper.pl ./
+perl rad_haplotyper.pl -v $t/HWE.recode.vcf  -x 20 -mp 1 -u 10 -ml 4 -n -e -p $t/popmap.$CUTOFF.$CUTOFF2 -r reference.fasta -e
+Filtered 0 loci below missing data cutoff
+Filtered 0 possible paralogs
+Filtered 453 loci with low coverage or genotyping errors
+Filtered 0 loci with an excess of haplotypes
+
+
+cp stats.out $t/
+cd $t
+grep FILTERED stats.out | cut -f1 > loci.to.remove
+ln ../../scripts/remove.bad.hap.loci.sh 
+bash remove.bad.hap.loci.sh loci.to.remove HWE.recode.vcf
+
+grep -v '#' HWE.filtered.vcf | wc -l
+1558
+
+#counting het
+vcftools --vcf HWE.filtered.vcf  --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>RAD.het
+done
+paste popidHET RAD.het
+
+CA_KD   Average HET 0.104857
+CA_KT   Average HET -0.00427355
+CA_SR   Average HET 0.0811115
+LA_CH   Average HET 0.0330704
+TL_BD   Average HET -0.0239117
+TL_LO   Average HET -0.0019575
+TL_UB   Average HET 0.0139772
+VN_AG   Average HET 0.0357862
+VN_CT   Average HET 0.20459
+VN_DT   Average HET 0.0408369
+
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#SE LAM THEM CAI NAY NEU HWE VAN CON QUA THAP
+#Filter den HWE cutoff: 
+vcftools --vcf vcftools --vcf HWE.filtered.vcf --hwe 0.1 --recode --recode-INFO-all --out hwecutoff
+After filtering, kept 251 out of 251 Individuals
+After filtering, kept 1558 out of a possible 1558 Sites
+
+#counting het
+vcftools --vcf hwecutoff.recode.vcf --het
+t=$(cat popidHET)
+for i in $t 
+do
+  grep $i out.het | awk '{SUM+=$5} END {print "Average HET", SUM/NR}' >>hwecutoff.het
+done
+paste popidHET hwecutoff.het
+
+CA_KD   Average HET 0.104857
+CA_KT   Average HET -0.00427355
+CA_SR   Average HET 0.0811115
+LA_CH   Average HET 0.0330704
+TL_BD   Average HET -0.0239117
+TL_LO   Average HET -0.0019575
+TL_UB   Average HET 0.0139772
+VN_AG   Average HET 0.0357862
+VN_CT   Average HET 0.20459
+VN_DT   Average HET 0.0408369
+
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+#Filter relatedness individuals first
+#Tien hanh test related sau do remove cac ca the nay di
+nano related.indv
+INDV
+CA_KD18
+CA_KD27
+CA_KT24
+CA_SR11
+CA_SR20
+CA_SR26
+CA_SR27
+LA_CH02
+LA_CH06
+LA_CH12
+LA_CH40
+LA_CH41
+TL_BD10
+VN_AG06
+VN_AG08
+VN_AG09
+VN_CT09
+VN_CT15
+VN_CT16
+VN_CT17
+VN_CT18
+VN_CT19
+VN_DT07
+VN_DT09
+
+vcftools --vcf hwecutoff.recode.vcf --remove related.indv --recode --recode-INFO-all --out rmind.related
+After filtering, kept 227 out of 251 Individuals
+After filtering, kept 1558 out of a possible 1558 Sites
+
+#FILTER to choose NEUTRAL AND DIVERGENT testing 
+#42 outlier
+#87 loci = Divegen without outlier
+nano outlier.loci
+
+awk '!/#/' rmind.related.recode.vcf > noheader.vcf
+awk '/#/' rmind.related.recode.vcf > outlierloci.vcf
+t=$(cat outlier.loci)
+for i in $t; do head -$i noheader.vcf | tail -1 >> outlierloci.vcf; done
+
+awk '!/#/' outlierloci.vcf | cut -f1,2 > outlier.loci
+vcftools --vcf rmind.related.recode.vcf --exclude-positions outlier.loci --recode --recode-INFO-all --out NeutralLoci
+After filtering, kept 227 out of 227 Individuals
+After filtering, kept 1516 out of a possible 1558 Sites
+
+nano divergent.loci
+
+awk '/#/' rmind.related.recode.vcf > divergent.vcf
+t=$(cat divergent.loci)
+for i in $t; do head -$i noheader.vcf | tail -1 >> divergent.vcf; done
+
+grep CHROM NeutralLoci.recode.vcf | cut -f10- | tr '\t' '\n' > popRMI
+awk '{print substr($0,4,2)}' popRMI > popidRMI
+paste popRMI popidRMI > popmap.$CUTOFF.$CUTOFF2.related
+
+
+#max-missing 100 from Neutral loci
+vcftools --vcf NeutralLoci.recode.vcf --max-missing 1 --recode --recode-INFO-all --out max100
+
+#Can bang so luong ca the cho tung quan the. Tim quan the co so luong ca the thap nhat(PS=17).
+#Loai bo cac ca the trong cac quan the khac sao cho so luong bang nhau (=17)
+nano migraterm.indv
+INDV
+
+
+vcftools --vcf max100.recode.vcf --remove migraterm.indv --recode --recode-INFO-all --out rmind.4migrate
+
+
+
+ln ../../scripts/Filter_one_random_snp_per_contig.sh
+./Filter_one_random_snp_per_contig.sh rmind.4migrate.recode.vcf
+awk '!/#/' best.rmind.4migrate.vcf | wc -l
+205
+
+t=$(pwd)
+cd ../mapping
+#CutoffCode="6.5"
+cp ../../scripts/rad_haplotyper115HPC.pl ./
+perl rad_haplotyper115HPC.pl -v $t/best.rmind.4migrate.vcf  -x 32 -mp 1 -u 10 -ml 4 -n -e -p $t/popmap.$CUTOFF.$CUTOFF2.related -r reference.fasta -a $t/migrate.ima
