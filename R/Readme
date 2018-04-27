@@ -34,3 +34,13 @@ This instruction for relatednees detection
 #Step 10. Write to EXCEL file
           write.csv(output$relatedness,file="the_path_you_want_to_save_out.related.csv")
 #Step 11. Open output file in EXCEL and sort columns by Decrease ordered, and check values with >0.9. We will summary all individuals with this value and need be remove them out in next filtering step
+#Step 12. Marked FS, PO or U
+rxy coefficients of 0.5 (parents-offspring (PO) and full siblings (FS)), 
+0.25 (half siblings/avuncular/grandparent-grandchild (HS)), 
+0.125 (first cousin (FC)), 
+0.01325 (second cousin (SC)) and 0 (unrelated (U)).
+
+The use and abuse of genetic marker-based estimates of relatedness and inbreeding 
+Helen R. Taylor
+Allan Wilson Centre, School of Biological Sciences, Victoria University of Wellington, Kelburn Parade, Wellington, New Zealand
+
