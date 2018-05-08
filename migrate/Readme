@@ -1,11 +1,11 @@
 #Step1. Filter for migration only 
-#max-missing 100 means for purify 100 percent data fill up
-vcftools --vcf NeutralLoci.recode.vcf --max-missing 1 --recode --recode-INFO-all --out max100
+#max-missing 100 means for purify 100 percent data fill up - DUNG LAY NEUTRAL MA LAY ALL LOCI NHA
+vcftools --vcf hwe.rmsite.recode.vcf --max-missing 1 --recode --recode-INFO-all --out max100
 After filtering, kept 80 out of 80 Individuals
 After filtering, kept 661 out of a possible 721 Sites
 
 #Remove all individulas relatedness if you have
-#vcftools --vcf hwe.rmsite.recode.vcf --remove related.list --recode --recode-INFO-all --out rmind.related
+#vcftools --vcf max100.recode.vcf --remove related.list --recode --recode-INFO-all --out rmind.related
 
 #Make sure the same number of individuals inside each pop. Find the minimum pop size (QN=24).
 #Remove all individuals over MIN (24)
@@ -20,7 +20,7 @@ KH_NT217
 PY_PY209 
 PY_PY210 
 
-vcftools --vcf max100.recode.vcf --remove migraterm.indv --recode --recode-INFO-all --out rmind.4migrate
+vcftools --vcf rmind.related.recode.vcf --remove migraterm.indv --recode --recode-INFO-all --out rmind.4migrate
 After filtering, kept 72 out of 80 Individuals
 After filtering, kept 661 out of a possible 661 Sites
 
