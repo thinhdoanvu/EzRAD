@@ -475,7 +475,7 @@ VN_VL   Average HET 0.0474188
 
 ln ../../scripts/filter_hwe_by_pop.pl
 #perl filter_hwe_by_pop.pl -v SNP.Boes-g95maf01p5.recode.vcf -p popmap2.6.5 -o SNP.Boes-g95maf01p5.HWE -h 0.01
-perl filter_hwe_by_pop.pl -v SNP.$name-g95maf01p5.recode.vcf -p popmap.4.5 -o SNP.$name-g95maf01p5.HWE -h 0.01
+perl filter_hwe_by_pop.pl -v SNP.$name-g95maf01p5.recode.vcf -p popmap.$CUTOFF.$CUTOFF2 -o SNP.$name-g95maf01p5.HWE -h 0.01
 Processing population: AG (25 inds)
 Processing population: PM (24 inds)
 Processing population: SN (23 inds)
