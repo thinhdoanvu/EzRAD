@@ -3,11 +3,11 @@ module load vcftools/0.1.15
 module load vcflib/1.0
 module load parallel/20180122
 
-cp ../mapping/raw.6.5.vcf/Final90.6.5.recode.vcf .
-
-CUTOFF=4
+CUTOFF=3
 CUTOFF2=5
-
+cp ../mapping/TotalRawSNPs.$CUTOFF.$CUTOFF2.vcf .
+grep CHROM TotalRawSNPs.$CUTOFF.$CUTOFF2.vcf | cut -f10- | tr '\t' '\n' > popRMI
+awk '{print substr($0,1,7)}' popRMI | uniq  > popidHET
 nano BH.remove
 INDV
 LA_BA01
@@ -42,7 +42,7 @@ LA_BA29
 LA_BA30
 
 #remove quan the BANHAT ra tuoc khi thuc hien vi qua nhieu lan test BANHAT co HET qua thap
-vcftools --vcf Final90.recode.$CUTOFF.$CUTOFF2.vcf --remove BH.remove --recode --recode-INFO-all --out BH.remove
+vcftools --vcf TotalRawSNPs.$CUTOFF.$CUTOFF2.vcf --remove BH.remove --recode --recode-INFO-all --out BH.remove
 After filtering, kept 271 out of 301 Individuals
 After filtering, kept 180783 out of a possible 180783 Sites
 
