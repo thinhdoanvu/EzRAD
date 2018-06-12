@@ -13,3 +13,59 @@
 8. Keep only Divergent Loci, and use for test 2,5 again
 9. Using Neutral data for Effected population size by NeEstimator
 10. Using Neutral data for migration test
+########################################################################################################
+PangasiusLanaudi:
+Sheet: hwe
+You can see 
+	the number of loci for analysis: 559
+	the number of individuals: 43
+	the number of sample sites: 2
+	the number of sample per site: 27 and 16
+
+AFP sheet (Don't attention)
+out.related sheet
+This sheet is use for imbreeding test, the related value would be from 0 to 1 and devide into 4 parts:
+0.50-1.0 means for full sibling
+0.25-0.50 means for half sibling
+0.10-0.25 means for first cousin
+>0-0.10 means for second cousin
+=0 means for no related
+So, that why I choose >0.8 for remove individuals, actually I can reomove more samples from 0.25.
+How are the related values tell something? I think they relavant with aquaculture fish or populations with the same parents.
+
+Outlier loci use for detect adaptation with environment of species. In this sheet, please check grap. You can see 3-color yellow, red and grey.
+	Yellow indicates for balance loci which is adaptable for environment
+	Grey indicates for stable loci
+	Red indicates for long-time loci
+In this sheet, please focus on FDR column. If this value mark OUTLIER, that means the locus will be change for adaptation.
+We need to remove that loci (neutral loci remain)
+
+HFP_neutral sheet
+	These values indicate for Heterozygousity value. The population which higher values mean that pop higher diversity. Please check line 18-23th
+	
+Structure sheet
+In this sheet you can see 2 colors (red and green). However, they mix togethers and seem to be 1 group.
+What is the story?
+2 sites may be come from 1 group. All of them share the same many genetic. Sheet Amova tell you more
+
+AMOVA sheet
+We assume that we have 1 group which include UB and MK mainstream. How is the different inside?
+Among population is lower 0.5% and the different almost come from within group (>99%)
+
+Fst sheet
+Fst value shows how is the different populations. This value from 0 to 1 and devide into 4 parts:
+Hartl and Clark (1997) had some classes for FST. 
+<0.05 = little genetic diff.
+0.05-0.15 = moderate genetic diff.
+0.15-0.25 = great genetic diff.
+>0.25 = very great genetic diff.
+Frankham et al. (2002; 2010) had FST>0.15 = significant differentiation
+
+In this sheet, the value below diagonal indicate the Fst value with 0.012. This means, 2 populations seem connect together with p-value significant 0.0001.
+
+Ne sheet tells about healthy populations
+If pop with lower 500 for Ne value that means this pop have real problem. Need to be conservation or No diversity.
+
+PCA sheet
+PCA graph show more related population clearly than structure. Please attention on the horizontal and vertical lines, they will tell you about the 
+connect or disconnect populations.
