@@ -90,3 +90,10 @@ Number of permutations : 1023
            4         +         +         +                   +
            5         +         +         +         +          
 + means for significant p-value (less than or equal with 0.05)
+
+Hartl and Clark (1997) had some classes for FST. 
+<0.05 = little genetic diff.
+0.05-0.15 = moderate genetic diff.
+0.15-0.25 = great genetic diff.
+>0.25 = very great genetic diff.
+Frankham et al. (2002; 2010) had FST>0.15 = significant differentiation
