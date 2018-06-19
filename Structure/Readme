@@ -20,3 +20,19 @@ Step 4. How to analyse Structure: https://github.com/thinhdoanvu/EzRAD/blob/mast
 Step 5. How to choose optimal K: https://github.com/thinhdoanvu/EzRAD/blob/master/Structure/How_to_choose_optimal_K
 
 Step 6. Graphs and so more, please open EXCEL file: https://github.com/thinhdoanvu/EzRAD/blob/master/Structure/Structure_Analysis.xlsx
+
+
+#################################################################################################################################
+The Bayesian analysis was carried out using the program STRUCTURE (Pritchard et al. 2000) with a burn-in of 10,000 and 100,000 iterations 
+for K populations ranging from 1 to 10 through 30 independent runs for each SSR group. The admixture model with correlated allele’s 
+frequencies was selected. To determine the optimum number of sub-populations, the average of the log-likelihood (lnP(D)) estimates and the 
+ad hoc statistic ∆k for each K were calculated (Evanno et al. 2005). 
+
+Admixture model
+Individuals may have mixed ancestry. This is modelled by saying that individual $ i$ has inherited some fraction of his/her genome from 
+ancestors in population $ k$. The output records the posterior mean estimates of these proportions. 
+Conditional on the ancestry vector, $ q^{(i)}$, the origin of each allele is independent. We recommend this model as a starting point for 
+most analyses. It is a reasonably flexible model for dealing with many of the complexities of real populations. 
+Admixture is a common feature of real data, and you probably won't find it if you use the no-admixture model. 
+The admixture model can also deal with hybrid zones in a natural way. 
+
