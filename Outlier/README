@@ -99,4 +99,12 @@ $outliers
 $nb_outliers
 [1] 24
  
-         
+####################################################################################################################################
+Explaination:
+
+For the method of Beaumont and Nichols (1996), the program LOSITAN was used (Antao et al. 2008). This method identifies loci under selection 
+based on the joint distributions of expected heterozygosity and FST. After removing a candidate subset of selected loci (outside the 95 % 
+confidence interval) determined by an initial run with 100,000 simulations, the distribution of neutral FST (depicted by curves around the 
+assessed loci) was computed using putatively neutral loci with 100,000 simulations and a bisection approximation algorithm (Antao et al. 2008). 
+Outliers were identified by comparing observed distribution with neutral expectations at the 99 and 1 % confidence levels (FDR < 0.05). 
+Loci outside the 99 and 5 % confidence areas were identified as candidates affected by positive (divergent) and balancing selection, respectively.
