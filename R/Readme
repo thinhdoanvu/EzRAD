@@ -38,7 +38,7 @@ This instruction for relatednees detection
 rxy coefficients of 0.5 (parents-offspring (PO) and full siblings (FS)), 
 0.25 (half siblings/avuncular/grandparent-grandchild (HS)), 
 0.125 (first cousin (FC)), 
-0.01325 (second cousin (SC)) and 0 (unrelated (U)).
+0.03125 (second cousin (SC)) and 0 (unrelated (U)).
 
 The use and abuse of genetic marker-based estimates of relatedness and inbreeding 
 Helen R. Taylor
