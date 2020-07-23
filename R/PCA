@@ -1,0 +1,77 @@
+Step 1. Loading file:
+#inputdata <- read.csv("C:/Users/altera/Downloads/Data Biofilm.csv",header = TRUE)
+
+	CODE	R	I	S	Biofilm
+	H1	3	2	9	0.204542311
+	H2	1	5	8	0.545542311
+	H3	1	0	13	-0.007457689
+	H4	0	0	14	0.046542311
+	H5	0	1	13	-0.020457689
+
+Checking input data
+#str(inputdata)
+	'data.frame':	72 obs. of  5 variables:
+	 $ CODE   : Factor w/ 72 levels "A1","A10","A11",..: 27 38 49 50 51 52 53 54 55 28 ...
+	 $ R      : int  3 1 1 0 0 1 0 0 1 1 ...
+	 $ I      : int  2 5 0 0 1 2 0 0 0 0 ...
+	 $ S      : int  9 8 13 14 13 11 14 14 13 13 ...
+	 $ Biofilm: num  0.20454 0.54554 -0.00746 0.04654 -0.02046 ...
+
+Convert factor data for column 1
+#inputdata$CODE <- as.factor(inputdata$CODE)
+#str(inputdata)
+	'data.frame':	72 obs. of  5 variables:
+	 $ CODE   : Factor w/ 72 levels "A1","A10","A11",..: 27 38 49 50 51 52 53 54 55 28 ...
+	 $ R      : int  3 1 1 0 0 1 0 0 1 1 ...
+	 $ I      : int  2 5 0 0 1 2 0 0 0 0 ...
+	 $ S      : int  9 8 13 14 13 11 14 14 13 13 ...
+	 $ Biofilm: num  0.20454 0.54554 -0.00746 0.04654 -0.02046 ...
+
+Step 2. Compute the Principal Components
+#mtpca.pca <- prcomp(inputdata, center = TRUE,scale. = TRUE)
+#OR: specific columns: mtpca.pca <- prcomp(inputdata[,c(2:5)], center = TRUE,scale. = TRUE)
+
+Then you can have a peek at your PCA object with summary().
+#summary(mtpca.pca)
+
+Let's call str() to have a look at your PCA object.
+#str(mtpca.pca)
+
+Step 4. Plotting PCA
+You will use the ggbiplot package, which offers a user-friendly and pretty function to plot biplots. A biplot is a type of plot that will allow you to visualize how the samples relate to one another in our PCA (which samples are similar and which are different) and will simultaneously reveal how each variable contributes to each principal component.
+#library(devtools)
+#install_github("vqv/ggbiplot")
+
+Next, you can call ggbiplot on your PCA:
+#library(ggbiplot)
+#ggbiplot(mtpca.pca)
+
+Step 5. Interpreting the results
+Counting the number of Sample belong to Groups
+#mtpca.sample <- c(rep("H",29),rep("V",17),rep("A",26))
+#ggbiplot(mtpca.pca,ellipse=TRUE,  labels=rownames(inputdata), groups=mtpca.sample)
+
+Step 6. Let's have a look at PC3 and PC4:
+#ggbiplot(mtpca.pca,ellipse=TRUE,choices=c(3,4),labels=rownames(inputdata), groups=mtpca.sample)
+
+#Step 7. Graphical parameters with ggbiplot
+There are also some other variables you can play with to alter your biplots. You can add a circle to the center of the dataset (circle argument):
+#ggbiplot(mtpca.pca,ellipse=TRUE,circle=TRUE, labels=rownames(inputdata), groups=mtpca.sample)
+
+Step 8. You can also scale the samples (obs.scale) and the variables (var.scale):
+#ggbiplot(mtpca.pca,ellipse=TRUE,obs.scale = 1, var.scale = 1,  labels=rownames(inputdata), groups=mtpca.sample)
+
+Step 9. You can also remove the arrows altogether, using var.axes.
+#ggbiplot(mtpca.pca,ellipse=TRUE,obs.scale = 1, var.scale = 1,var.axes=FALSE,   labels=rownames(inputdata), groups=mtpca.sample)
+
+Step 10. Customize ggbiplot
+As ggbiplot is based on the ggplot function, you can use the same set of graphical parameters to alter your biplots as you would for any ggplot. Here, you're going to:
+	Specify the colours to use for the groups with scale_colour_manual()
+	Add a title with ggtitle()
+	Specify the minimal() theme
+	Move the legend with theme()
+#ggbiplot(mtpca.pca,ellipse=TRUE,obs.scale = 1, var.scale = 1,  labels=rownames(inputdata), groups=mtpca.sample) +
+  scale_colour_manual(name="Samples", values= c("forest green", "red3", "dark blue"))+
+  ggtitle("PCA of mtcars dataset")+
+  theme_minimal()+
+  theme(legend.position = "bottom")
