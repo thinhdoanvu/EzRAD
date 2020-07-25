@@ -1,3 +1,5 @@
+INSATLL ggbiplot package from tar.gz file from R folder.
+
 Step 1. Loading file:
 #inputdata <- read.csv("C:/Users/altera/Downloads/Data Biofilm.csv",header = TRUE)
 
