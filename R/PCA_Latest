@@ -1,0 +1,108 @@
+######PCA - Principal Component Analysis Essentials
+######R packages
+######Several functions from different packages are available in the R software for computing PCA:
+
+######prcomp() and princomp() [built-in R stats package],
+######PCA() [FactoMineR package],
+######dudi.pca() [ade4 package],
+#####and epPCA() [ExPosition package]
+#####No matter what function you decide to use, you can easily extract and visualize the results of PCA using R functions provided in the factoextra R package.
+##############################################################################################################################################
+# http://www.sthda.com/english/articles/31-principal-component-methods-in-r-practical-guide/112-pca-principal-component-analysis-essentials/ #
+##############################################################################################################################################
+Step1. Install R 4.03 and R Studio 1.3.1093
+Step 2. Install package:
+install.packages(c("FactoMineR", "factoextra"))
+##############################################################################################################################################
+> data <- read.table("C:/Users/NTUSCB/Downloads/Data_2020.csv",sep = ",",row.names = 1, header = TRUE)
+
+> res.pca <- PCA(data, graph = FALSE)
+
+	**Results for the Principal Component Analysis (PCA)**
+	The analysis was performed on 124 individuals, described by 4 variables
+	*The results are available in the following objects:
+
+	   name               description                          
+	1  "$eig"             "eigenvalues"                        
+	2  "$var"             "results for the variables"          
+	3  "$var$coord"       "coord. for the variables"           
+	4  "$var$cor"         "correlations variables - dimensions"
+	5  "$var$cos2"        "cos2 for the variables"             
+	6  "$var$contrib"     "contributions of the variables"     
+	7  "$ind"             "results for the individuals"        
+	8  "$ind$coord"       "coord. for the individuals"         
+	9  "$ind$cos2"        "cos2 for the individuals"           
+	10 "$ind$contrib"     "contributions of the individuals"   
+	11 "$call"            "summary statistics"                 
+	12 "$call$centre"     "mean of the variables"              
+	13 "$call$ecart.type" "standard error of the variables"    
+	14 "$call$row.w"      "weights for the individuals"        
+	15 "$call$col.w"      "weights for the variables" 
+
+> library("factoextra")
+> eig.val <- get_eigenvalue(res.pca)
+> eig.val
+	eigenvalue variance.percent cumulative.variance.percent
+	Dim.1 2.248991e+00     5.622478e+01                    56.22478
+	Dim.2 9.495936e-01     2.373984e+01                    79.96462
+	Dim.3 8.014152e-01     2.003538e+01                   100.00000
+	Dim.4 1.320379e-30     3.300947e-29                   100.00000
+
+fviz_eig(res.pca, addlabels = TRUE, ylim = c(0,60))
+
+> var <- get_pca_var(res.pca)
+> var
+
+	Principal Component Analysis Results for variables
+	 ===================================================
+	  Name       Description                                    
+	1 "$coord"   "Coordinates for the variables"                
+	2 "$cor"     "Correlations between variables and dimensions"
+	3 "$cos2"    "Cos2 for the variables"                       
+	4 "$contrib" "contributions of the variables"  
+	
+> var$coord (Correlation circle)
+             Dim.1      Dim.2        Dim.3         Dim.4
+R        0.8239838 -0.3209429  0.466954409  6.475341e-16
+I        0.6920135  0.1698996 -0.701606356  4.336787e-16
+S       -0.9872987  0.1588590  0.002253489  8.443940e-16
+Biofilm  0.3411753  0.8902175  0.301847970 -2.391998e-32
+
+> var$cos2 (Quality of representation)
+            Dim.1      Dim.2        Dim.3        Dim.4
+R       0.6789493 0.10300432 2.180464e-01 4.193004e-31
+I       0.4788826 0.02886588 4.922515e-01 1.880772e-31
+S       0.9747587 0.02523619 5.078211e-06 7.130012e-31
+Biofilm 0.1164006 0.79248725 9.111220e-02 5.721654e-64
+
+> fviz_pca_var(res.pca, col.var = "cos2",
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), 
+             repel = TRUE # Avoid text overlapping
+             )
+
+> var$contrib
+            Dim.1     Dim.2        Dim.3        Dim.4
+R       30.189058 10.847200 2.720767e+01 3.175607e+01
+I       21.293220  3.039814 6.142278e+01 1.424419e+01
+S       43.342043  2.657578 6.336555e-04 5.399975e+01
+Biofilm  5.175679 83.455408 1.136891e+01 4.333342e-32
+
+> corrplot(var$contrib, is.corr=FALSE) 
+
+> set.seed(123)
+> res.km <- kmeans(var$coord, centers = 3, nstart = 25)
+> grp <- as.factor(res.km$cluster)
+# Color variables by groups
+fviz_pca_var(res.pca, col.var = grp, 
+             palette = c("#0073C2FF", "#EFC000FF", "#868686FF"),
+             legend.title = "Cluster")
+			 
+> ind <- get_pca_ind(res.pca)
+> ind
+Principal Component Analysis Results for individuals
+ ===================================================
+  Name       Description                       
+1 "$coord"   "Coordinates for the individuals" 
+2 "$cos2"    "Cos2 for the individuals"        
+3 "$contrib" "contributions of the individuals"
+
