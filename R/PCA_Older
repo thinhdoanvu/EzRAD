@@ -1,9 +1,9 @@
 INSATLL ggbiplot package from tar.gz file from R folder.
 
 Step 1. Loading file:
-#inputdata <- read.csv("C:/Users/altera/Downloads/Data Biofilm.csv",header = TRUE)
+#inputdata <- read.table("C:/Users/altera/Downloads/Data Biofilm.csv",header = TRUE,sep = ",",row.names = 1)
 
-	CODE	R	I	S	Biofilm
+		R	I	S	Biofilm
 	H1	3	2	9	0.204542311
 	H2	1	5	8	0.545542311
 	H3	1	0	13	-0.007457689
