@@ -50,8 +50,13 @@ Next, you can call ggbiplot on your PCA:
 
 Step 5. Interpreting the results
 Counting the number of Sample belong to Groups
-#mtpca.sample <- c(rep("H",29),rep("V",17),rep("A",26))
+#mtpca.sample <- c(rep("para_Panu",35),rep("para_mono",3),rep("para_vanna",25),rep("lumi_mono",22),rep("lumi_panu",4),rep("lumi_vanna",12),rep("Vy_vanna",15),rep("Vy_mono",5),rep("Vy_panu",3))
 #ggbiplot(mtpca.pca,ellipse=TRUE,  labels=rownames(inputdata), groups=mtpca.sample)
+
+Cai nay dung de ve cac diem tron, vuong, tam giac va khong co Elipse
+>thinh=ggbiplot(mtpca.pca,ellipse=TRUE)
+>thinh+geom_point(aes(shape=factor(mtpca.sample),colour=factor(mtpca.sample)))+scale_shape_manual(values=seq(1:9))
+#Trong do: seq(1:9) la 9 ky hieu tuong ung voi so group cua mtpca.sample
 
 Step 6. Let's have a look at PC3 and PC4:
 #ggbiplot(mtpca.pca,ellipse=TRUE,choices=c(3,4),labels=rownames(inputdata), groups=mtpca.sample)
